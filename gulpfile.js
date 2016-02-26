@@ -22,7 +22,7 @@ var autoprefixerOptions = {
 
 gulp.task('sass', function() {
     return gulp
-        .src('src/sass/**/*.scss')
+        .src('src/scss/**/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass(sassOptions).on('error', sass.logError))
         .pipe(cssnano({autoprefixer: autoprefixerOptions}))
@@ -41,13 +41,7 @@ gulp.task('browser-sync', function() {
 
 
 gulp.task('watch', ['browser-sync'], function(){
-    gulp.watch(['src/css/**/*.scss'], ['sass', browserSync.reload]);
-    gulp.watch(['src/js/**/*.js'], browserSync.reload);
-    gulp.watch(['src/**/*.php', 'src/**/*.html'], browserSync.reload);
-});
-
-gulp.task('watch-copy', ['browser-sync'], function(){
-    gulp.watch(['src/css/**/*.scss'], ['copy-css', browserSync.reload]);
+    gulp.watch(['src/scss/**/*.scss'], ['sass', browserSync.reload]);
     gulp.watch(['src/js/**/*.js'], browserSync.reload);
     gulp.watch(['src/**/*.php', 'src/**/*.html'], browserSync.reload);
 });
