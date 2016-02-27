@@ -11,9 +11,9 @@
     var $audioURLInput, $audioURLSubmit;
 
     var $player, $playerPlay, $playerPrevious, $playerNext;
-    var isPlaying = false;
+    var isPlaying = true;
 
-    var scPlayer;
+    var scPlayer = new SoundCloudAudio(CLIENT_ID);
 
     // Add an event listener of DOMContentLoaded to the whole document and call an anonymous function.
     // You can then wrap your code in that function's brackets
@@ -34,12 +34,32 @@
             createPlayer();
         });
 
+        $playerPlay.addEventListener('click', function() {
+            if (isPlaying) {
+                isPlaying = false;
+                scPlayer.pause();
+            } else {
+                isPlaying = true;
+                scPlayer.play();
+            }
+        });
+
+        $playerNext.addEventListener('click', function() {
+            scPlayer.next();
+        });
+
+        $playerPrevious.addEventListener('click', function() {
+            scPlayer.previous();
+        });
+
         createPlayer();
 
     });
 
     function createPlayer() {
+        scPlayer.stop();
         scPlayer = new SoundCloudAudio(CLIENT_ID);
+
         // OR to load PLAYLIST and resolve it's data
         scPlayer.resolve(audioURL, function (err, playlist) {
             // do smth with array of `playlist.tracks` or playlist's metadata
