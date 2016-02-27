@@ -13,25 +13,40 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
-        <header class="header" role="banner">
-            <div class="container">
-                <h1 class="header-logo logo">SilentParty</h1>
-            </div>
-        </header>
-        <main>
-            <div>
-                <input id="audioURL-input" class="audioURL-input" type="text">
-                <button id="audioURL-submit" class="audioURL-submit" type="button">submit</button>
-            </div>
-            <article id="player" class="player">
-                <h1 id="player-title" class="player-title"></h1>
+        <div class="page">
+            <header class="header" role="banner">
+                <div class="container">
+                    <h1 class="header-logo logo">
+                        <a class="logo-link link-reset" href="#">SilentParty</a>
+                    </h1>
+                </div>
+            </header>
+            <main>
+                <section class="center">
+                    <div class="container">
+                        <h2>Submit a soundcloud URL</h2>
+                        <div class="audioURL mx-auto w-sm-6">
+                            <input id="audioURL-input" class="audioURL-input" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix">
+                            <button id="audioURL-submit" class="audioURL-submit" type="button">submit</button>
+                        </div>
+                    </div>
+                </section>
+                <section class="center">
+                    <div class="container">
+                        <h2>Player</h2>
+                        <article id="player" class="player mx-auto w-6">
+                            <h1 id="player-title" class="player-title"></h1>
 
-                <button id="player-play" class="player-control" type="button">Play</button>
-                <button id="player-previous" class="player-control" type="button">Previous</button>
-                <button id="player-next" class="player-control" type="button">Next</button>
-
-            </article>
-        </main>
+                            <div class="player-controls">
+                                <button id="player-previous" class="player-control player-control--previous" type="button">Prev</button>
+                                <button id="player-play" class="player-control player-control--play" type="button">Play</button>
+                                <button id="player-next" class="player-control player-control--next" type="button">Next</button>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </main>
+        </div>
 
         <!-- SCRIPTS -->
         <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>

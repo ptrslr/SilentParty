@@ -1,0 +1,95 @@
+.header {
+
+}
+
+.header-logo {
+    text-align: center;
+}
+
+.logo {
+    margin: 64px 0;
+}
+
+.logo-link {
+
+}
+
+button,
+.btn,
+input,
+.input {
+    padding: 10px 15px;
+    background: none;
+    border: 1px solid $gray;
+
+    line-height: 1.3;
+
+    transition: all 150ms;
+
+    &:hover,
+    &:focus {
+        border-color: $black;
+    }
+}
+
+
+.audioURL {
+    display: flex;
+    margin: 0 auto 48px;
+}
+
+.audioURL-input,
+.audioURL-submit {
+}
+.audioURL-input {
+    flex: 1 1 auto;
+    &:focus {
+        outline: none;
+        border-color: $black;
+    }
+}
+
+.audioURL-submit {
+    flex: 0 0 auto;
+    margin-left: 8px;
+
+    &:hover,
+    &:focus {
+        outline: none;
+        border-color: $black;
+
+        background: $black;
+        color: #fff;
+    }
+}
+
+
+.player-controls {
+    text-align: center;
+}
+
+.player-control {
+    display: inline-block;
+    margin-right: 4px;
+    border-radius: 100%;
+
+    &:hover,
+    &:focus {
+
+    }
+}
+
+.player-control:last-child {
+    margin-right: 0;
+}
+
+.player-control--next,
+.player-control--previous {
+    width: 64px;
+    height: 64px;
+}
+
+.player-control--play {
+    width: 86px;
+    height: 86px;
+}
