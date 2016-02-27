@@ -3,6 +3,7 @@ var gulp   = require('gulp')
     sourcemaps = require('gulp-sourcemaps'),
     cssnano = require('gulp-cssnano'),
     rename = require('gulp-rename'),
+    jshint = require('gulp-jshint'),
     browserSync = require('browser-sync');
 
 // define the default task and add the watch task to it
@@ -39,9 +40,15 @@ gulp.task('browser-sync', function() {
     });
 });
 
+gulp.task('lint', function() {
+    return gulp.src('./src/js/*.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
+});
+
 
 gulp.task('watch', ['browser-sync'], function(){
     gulp.watch(['src/scss/**/*.scss'], ['sass', browserSync.reload]);
-    gulp.watch(['src/js/**/*.js'], browserSync.reload);
+    gulp.watch(['src/js/**/*.js'], ['lint', browserSync.reload]);
     gulp.watch(['src/**/*.php', 'src/**/*.html'], browserSync.reload);
 });
