@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="">
+<html lang="" ng-app="silentParty">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -25,22 +25,22 @@
                 <section class="center">
                     <div class="container">
                         <h2>Submit a soundcloud URL</h2>
-                        <div class="audioURL mx-auto w-sm-6">
-                            <input id="audioURL-input" class="audioURL-input" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix">
-                            <button id="audioURL-submit" class="audioURL-submit" type="button">submit</button>
+                        <div class="audioURL mx-auto w-sm-6" ng-controller="AudioSubmitController as audioSubmit">
+                            <input id="audioURL-input" class="audioURL-input" ng-model="audioSubmit.audioURL" my-enter="audioSubmit.submit()" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix">
+                            <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit()" type="button">submit</button>
                         </div>
                     </div>
                 </section>
                 <section class="center">
                     <div class="container">
                         <h2>Player</h2>
-                        <article id="player" class="player mx-auto w-6">
-                            <h1 id="player-title" class="player-title"></h1>
+                        <article id="player" class="player mx-auto w-6" ng-controller="PlayerController as player">
+                            <h1 id="player-title" class="player-title" ng-bind="player.songTitle"></h1>
 
                             <div class="player-controls">
-                                <button id="player-previous" class="player-control player-control--previous" type="button">Prev</button>
-                                <button id="player-play" class="player-control player-control--play" type="button">Play</button>
-                                <button id="player-next" class="player-control player-control--next" type="button">Next</button>
+                                <button id="player-previous" class="player-control player-control--previous" ng-click="player.previous()" type="button">Prev</button>
+                                <button id="player-play" class="player-control player-control--play" ng-click="player.playPause()" ng-bind="player.playPauseLabel || 'Play'" type="button"></button>
+                                <button id="player-next" class="player-control player-control--next" ng-click="player.next()" type="button">Next</button>
                             </div>
                         </article>
                     </div>
@@ -49,9 +49,11 @@
         </div>
 
         <!-- SCRIPTS -->
+        <script src="js/vendor/angular.min.js"></script>
         <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
         <script src="js/vendor/soundcloud-audio.min.js"></script>
 
         <script src="js/app.js"></script>
+        <script src="js/controllers.js"></script>
     </body>
 </html>
