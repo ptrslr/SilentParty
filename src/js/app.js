@@ -29,6 +29,8 @@ app.factory('playlist', function() {
       // playlist = scPlaylist;
       playlist.tracks = scPlaylist.tracks;
       playlist.trackCount = playlist.tracks.length;
+      playlist.updateCurrentTrack();
+
 
       console.log(playlist.tracks);
 
@@ -44,6 +46,17 @@ app.factory('playlist', function() {
       // });
     });
   };
+
+  playlist.getCurrentTrack = function() {
+    return playlist.tracks[playlist.nowPlaying];
+  };
+
+  playlist.updateCurrentTrack = function() {
+    playlist.currentTrack = playlist.getCurrentTrack();
+    // playlist.currentTrackImage = playlist.currentTrack.artwork_url.replace('large', 't500x500');
+    playlist.currentTrackImage = playlist.currentTrack.artwork_url;
+  };
+
 
   return playlist;
 });
@@ -107,6 +120,7 @@ app.controller('PlayerController', function(playlist) {
 
     if (playlist.nowPlaying > 0) {
       playlist.nowPlaying--;
+      playlist.updateCurrentTrack();
     }
   };
   self.next = function() {
@@ -115,6 +129,7 @@ app.controller('PlayerController', function(playlist) {
 
     if (playlist.nowPlaying < playlist.trackCount - 1) {
       playlist.nowPlaying++;
+      playlist.updateCurrentTrack();
     }
   };
 });
