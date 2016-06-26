@@ -17,6 +17,7 @@ var app = angular.module('silentParty', []);
 app.factory('playlist', function() {
   var playlist = {};
   playlist.tracks = [];
+  playlist.trackCount = 0;
   playlist.nowPlaying = 0;
 
   playlist.getPlaylist = function(audioURL) {
@@ -27,6 +28,7 @@ app.factory('playlist', function() {
       //
       // playlist = scPlaylist;
       playlist.tracks = scPlaylist.tracks;
+      playlist.trackCount = playlist.tracks.length;
 
       console.log(playlist.tracks);
 
@@ -100,9 +102,20 @@ app.controller('PlayerController', function(playlist) {
   };
   self.previous = function() {
     scPlayer.previous();
+
+    // playlist.nowPlaying = (playlist.nowPlaying - 1) % playlist.trackCount;
+
+    if (playlist.nowPlaying > 0) {
+      playlist.nowPlaying--;
+    }
   };
   self.next = function() {
     scPlayer.next();
+    // playlist.nowPlaying = (playlist.nowPlaying + 1) % playlist.trackCount;
+
+    if (playlist.nowPlaying < playlist.trackCount - 1) {
+      playlist.nowPlaying++;
+    }
   };
 });
 
