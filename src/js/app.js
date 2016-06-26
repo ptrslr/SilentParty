@@ -3,35 +3,51 @@ var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823',
     isPlaying = false,
     scPlayer = new SoundCloudAudio(CLIENT_ID);
 
+var scPlaylist, scPlayer;
+
 function createPlayer() {
   scPlayer.stop();
   scPlayer = new SoundCloudAudio(CLIENT_ID);
-
-  // OR to load PLAYLIST and resolve it's data
-  scPlayer.resolve(audioURL, function (err, playlist) {
-    // do smth with array of `playlist.tracks` or playlist's metadata
-    // e.g. display playlist info in a view etc.
-    // console.log(playlist);
-
-    // once playlist is loaded it can be played
-    if (isPlaying) {
-      scPlayer.play();
-    }
-
-    // for playlists it's possible to switch to another track in queue
-    // e.g. we do it here when playing track is finished
-    scPlayer.on('ended', function () {
-      scPlayer.next();
-    });
-  });
 }
 
 createPlayer();
 
-var myApp = angular.module('silentParty', []);
+var app = angular.module('silentParty', []);
+
+app.factory('playlist', function() {
+  var playlist = {};
+  playlist.tracks = [];
+  playlist.nowPlaying = 0;
+
+  playlist.getPlaylist = function(audioURL) {
+    scPlayer.resolve(audioURL, function (scPlaylist) {
+      // do smth with array of `playlist.tracks` or playlist's metadata
+      // e.g. display playlist info in a view etc.
+      // scPlaylist = playlist;
+      //
+      // playlist = scPlaylist;
+      playlist.tracks = scPlaylist.tracks;
+
+      console.log(playlist.tracks);
+
+      // once playlist is loaded it can be played
+      // if (isPlaying) {
+      //   scPlayer.play();
+      // }
+
+      // for playlists it's possible to switch to another track in queue
+      // e.g. we do it here when playing track is finished
+      // scPlayer.on('ended', function () {
+      //   scPlayer.next();
+      // });
+    });
+  };
+
+  return playlist;
+});
 
 // http://stackoverflow.com/questions/17470790/how-to-use-a-keypress-event-in-angularjs
-myApp.directive('myEnter', function () {
+app.directive('myEnter', function () {
     return function (scope, element, attrs) {
         element.bind("keydown keypress", function (event) {
             if(event.which === 13) {
@@ -45,20 +61,25 @@ myApp.directive('myEnter', function () {
     };
 });
 
-myApp.controller('AudioSubmitController', function() {
+app.controller('AudioSubmitController', function(playlist) {
   var self = this;
+  self.audioURL = "https://soundcloud.com/ptrslr/sets/chill";
+
+  self.playlist = playlist;
 
   self.submit = function() {
     audioURL = self.audioURL;
     createPlayer();
+    playlist.getPlaylist(audioURL);
   };
   self.keydown = function() {
 
   };
 });
 
-myApp.controller('PlayerController', function() {
+app.controller('PlayerController', function(playlist) {
   var self = this;
+  self.playlist = playlist;
 
   self.createPlayer = function() {
 
@@ -71,8 +92,10 @@ myApp.controller('PlayerController', function() {
     } else {
       isPlaying = true;
       scPlayer.play();
+      // console.log(scPlayer.playing);
       self.playPauseLabel = "Pause";
     }
+    console.log(self.title);
 
   };
   self.previous = function() {
@@ -81,4 +104,16 @@ myApp.controller('PlayerController', function() {
   self.next = function() {
     scPlayer.next();
   };
+});
+
+app.controller('PlaylistController', function(playlist) {
+  var self = this;
+
+  self.playlist = playlist;
+  self.tracks = playlist.tracks;
+
+  self.test = function() {
+    console.log(playlist.tracks[0].title);
+  };
+
 });

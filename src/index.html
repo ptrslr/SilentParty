@@ -10,6 +10,8 @@
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
 
+
+        <link href="https://npmcdn.com/basscss@8.0.1/css/basscss.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
@@ -26,7 +28,7 @@
                     <div class="container">
                         <h2>Submit a soundcloud URL</h2>
                         <div class="audioURL mx-auto w-sm-6" ng-controller="AudioSubmitController as audioSubmit">
-                            <input id="audioURL-input" class="audioURL-input" ng-model="audioSubmit.audioURL" my-enter="audioSubmit.submit()" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix">
+                            <input id="audioURL-input" class="audioURL-input" ng-model="audioSubmit.audioURL" my-enter="audioSubmit.submit()" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="">
                             <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit()" type="button">submit</button>
                         </div>
                     </div>
@@ -34,13 +36,20 @@
                 <section class="center">
                     <div class="container">
                         <h2>Player</h2>
-                        <article id="player" class="player mx-auto w-6" ng-controller="PlayerController as player">
-                            <h1 id="player-title" class="player-title" ng-bind="player.songTitle"></h1>
+                        <article id="player" class="player mx-auto" ng-controller="PlayerController as player">
+                            <h1 id="player-title" class="player-title" ng-bind="player.playlist.tracks[player.playlist.nowPlaying].title"></h1>
 
                             <div class="player-controls">
                                 <button id="player-previous" class="player-control player-control--previous" ng-click="player.previous()" type="button">Prev</button>
                                 <button id="player-play" class="player-control player-control--play" ng-click="player.playPause()" ng-bind="player.playPauseLabel || 'Play'" type="button"></button>
                                 <button id="player-next" class="player-control player-control--next" ng-click="player.next()" type="button">Next</button>
+                            </div>
+
+                            <div class="mx-auto max-width-2" ng-controller="PlaylistController as playlist">
+                                <ol class="left-align">
+                                    <li ng-repeat="track in playlist.playlist.tracks" ng-bind="track.title"></li>
+                                </ol>
+                                <!-- <div ng-bind="playlist.playlist"></div> -->
                             </div>
                         </article>
                     </div>
