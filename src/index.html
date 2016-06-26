@@ -14,7 +14,7 @@
         <link href="https://npmcdn.com/basscss@8.0.1/css/basscss.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/main.css">
     </head>
-    <body>
+    <body ng-controller="MainController as main">
         <div class="page">
             <header class="header" role="banner">
                 <div class="container">
@@ -29,30 +29,30 @@
                         <h2>Submit a soundcloud URL</h2>
                         <div class="audioURL mx-auto w-sm-6" ng-controller="AudioSubmitController as audioSubmit">
                             <input id="audioURL-input" class="audioURL-input" ng-model="audioSubmit.audioURL" my-enter="audioSubmit.submit()" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="">
-                            <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit()" type="button">submit</button>
+                            <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit(); main.showPlayer = true;" type="button">submit</button>
                         </div>
                     </div>
                 </section>
                 <section class="center">
                     <div class="container">
                         <h2 class="hidden">Player</h2>
-                        <article id="player" class="player mx-auto" ng-controller="PlayerController as player">
+                        <article id="player" class="player mx-auto" ng-controller="PlayerController as player" ng-show="main.showPlayer">
                             <h1 id="player-title" class="player-title" ng-bind="player.playlist.getCurrentTrack().title"></h1>
-                            <img class="mb3" src="{{ player.playlist.currentTrackImage }}" />
+                            <img class="mb3" ng-src="{{ player.playlist.currentTrackImage }}" />
 
                             <div class="player-controls">
-                                <button id="player-previous" class="player-control player-control--previous" ng-click="player.previous()" type="button">Prev</button>
+                                <button id="player-previous" class="player-control player-control--previous" ng-click="player.previous()" ng-disabled="player.playlist.nowPlaying === 0" type="button">Prev</button>
                                 <button id="player-play" class="player-control player-control--play" ng-click="player.playPause()" ng-bind="player.playPauseLabel || 'Play'" type="button"></button>
-                                <button id="player-next" class="player-control player-control--next" ng-click="player.next()" type="button">Next</button>
+                                <button id="player-next" class="player-control player-control--next" ng-click="player.next()" ng-disabled="player.playlist.nowPlaying === player.playlist.trackCount - 1" type="button">Next</button>
+                            </div>
+                            <div class="mx-auto max-width-2" ng-controller="PlaylistController as playlist">
+                                <h2>Playlist</h2>
+                                <ol class="left-align">
+                                    <li ng-repeat="track in playlist.playlist.tracks" ng-bind="track.title"></li>
+                                </ol>
+                                <!-- <div ng-bind="playlist.playlist"></div> -->
                             </div>
                         </article>
-                        <div class="mx-auto max-width-2" ng-controller="PlaylistController as playlist">
-                            <h2>Playlist</h2>
-                            <ol class="left-align">
-                                <li ng-repeat="track in playlist.playlist.tracks" ng-bind="track.title"></li>
-                            </ol>
-                            <!-- <div ng-bind="playlist.playlist"></div> -->
-                        </div>
                     </div>
                 </section>
             </main>

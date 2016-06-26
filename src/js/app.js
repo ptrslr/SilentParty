@@ -31,6 +31,8 @@ app.factory('playlist', function() {
       playlist.trackCount = playlist.tracks.length;
       playlist.updateCurrentTrack();
 
+      // scPlayer.play();
+      // isPlaying = true;
 
       console.log(playlist.tracks);
 
@@ -45,6 +47,10 @@ app.factory('playlist', function() {
       //   scPlayer.next();
       // });
     });
+  };
+
+  playlist.isReady = function() {
+    return playlist.trackCount > 0;
   };
 
   playlist.getCurrentTrack = function() {
@@ -76,6 +82,11 @@ app.directive('myEnter', function () {
     };
 });
 
+app.controller('MainController', function() {
+  var self = this;
+  self.showPlayer = false;
+
+});
 app.controller('AudioSubmitController', function(playlist) {
   var self = this;
   self.audioURL = "https://soundcloud.com/ptrslr/sets/chill";
@@ -96,9 +107,6 @@ app.controller('PlayerController', function(playlist) {
   var self = this;
   self.playlist = playlist;
 
-  self.createPlayer = function() {
-
-  };
   self.playPause = function() {
     if (isPlaying) {
       isPlaying = false;
@@ -110,7 +118,7 @@ app.controller('PlayerController', function(playlist) {
       // console.log(scPlayer.playing);
       self.playPauseLabel = "Pause";
     }
-    console.log(self.title);
+    // console.log(self.title);
 
   };
   self.previous = function() {

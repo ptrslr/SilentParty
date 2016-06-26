@@ -6,14 +6,6 @@
     text-align: center;
 }
 
-.logo {
-    margin: 64px 0;
-}
-
-.logo-link {
-
-}
-
 button,
 .btn,
 input,
@@ -83,6 +75,15 @@ input,
     &:hover,
     &:focus {
 
+    }
+}
+
+.player-control[disabled] {
+    opacity: 0.2;
+
+    &:hover {
+        color: inherit;
+        border-color: inherit;
     }
 }
 
