@@ -63,8 +63,8 @@
                                     <ng-include src=" 'img/controller-next.svg' "></ng-includesrc=">
                                 </button>
                             </div>
-                            <div class="mx-auto max-width-3" ng-controller="PlaylistController as playlist">
-                                <h2>Playlist</h2>
+                            <div class="mx-auto mt3 max-width-3" ng-controller="PlaylistController as playlist">
+                                <h2 class="hidden">Playlist</h2>
                                 <ol class="playlist left-align list-reset">
                                     <li class="playlistTrack flex py1 px2" ng-click="player.playByIndex($index)" ng-repeat="track in playlist.playlist.tracks">
                                         <div class="playlistTrack-number mr1" ng-bind="$index + 1"></div>

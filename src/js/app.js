@@ -6,7 +6,10 @@ var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823',
 var scPlaylist, scPlayer;
 
 function createPlayer() {
-  scPlayer.stop();
+  if (isPlaying) {
+    scPlayer.stop();
+    isPlaying = false;
+  }
   scPlayer = new SoundCloudAudio(CLIENT_ID);
 }
 
@@ -16,15 +19,11 @@ app.factory('playlist', function($rootScope) {
   var playlist = {};
   playlist.tracks = [];
   playlist.trackCount = 0;
-  playlist.currentTrackIndex = 0;
 
   playlist.getPlaylist = function(audioURL) {
     scPlayer.resolve(audioURL, function (scPlaylist) {
-      // do smth with array of `playlist.tracks` or playlist's metadata
-      // e.g. display playlist info in a view etc.
-      // scPlaylist = playlist;
-      //
-      // playlist = scPlaylist;
+      playlist.currentTrackIndex = 0;
+
       playlist.tracks = scPlaylist.tracks;
       playlist.trackCount = playlist.tracks.length;
       playlist.updateCurrentTrack();
@@ -45,7 +44,9 @@ app.factory('playlist', function($rootScope) {
     playlist.currentTrack = playlist.getCurrentTrack();
     playlist.currentTrackID = playlist.currentTrack.id;
     playlist.currentTrackImage = playlist.currentTrack.artwork_url;
-    playlist.currentTrackImageLarge = playlist.currentTrack.artwork_url.replace('large', 't500x500');
+    if (playlist.currentTrackImage !== null) {
+      playlist.currentTrackImageLarge = playlist.currentTrack.artwork_url.replace('large', 't500x500');
+    }
   };
 
 
@@ -106,7 +107,7 @@ app.controller('PlayerController', function(playlist, $scope) {
       self.isPlaying = false;
     } else {
       scPlayer.play( {playlistIndex: playlist.currentTrackIndex} );
-      console.log(playlist.currentTrackIndex);
+      // console.log(playlist.currentTrackIndex);
       isPlaying = true;
       self.isPlaying = true;
     }
@@ -122,7 +123,7 @@ app.controller('PlayerController', function(playlist, $scope) {
       isPlaying = true;
     }
 
-    console.log(playlist.currentTrackIndex);
+    // console.log(playlist.currentTrackIndex);
   };
   self.next = function() {
     scPlayer.next();
@@ -134,7 +135,7 @@ app.controller('PlayerController', function(playlist, $scope) {
       isPlaying = true;
     }
 
-    console.log(playlist.currentTrackIndex);
+    // console.log(playlist.currentTrackIndex);
   };
   self.playByIndex = function(index) {
     playlist.currentTrackIndex = index;
@@ -153,7 +154,7 @@ app.controller('PlaylistController', function(playlist) {
   self.tracks = playlist.tracks;
 
   self.test = function() {
-    console.log(playlist.tracks[0].title);
+    // console.log(playlist.tracks[0].title);
   };
 
 });
