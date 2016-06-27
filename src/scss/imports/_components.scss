@@ -32,7 +32,10 @@ input,
  * Icons
  */
 .icon {
+    display: inline-block;
     height: 1em;
+
+    vertical-align: middle;
 }
 
 
@@ -127,4 +130,16 @@ input,
 .player-control--play {
     width: 86px;
     height: 86px;
+}
+
+/**
+ * Playlist
+ */
+.playlistTrack {
+    cursor: pointer;
+    // background: $gray-lighter;
+
+    &:hover {
+        background: $gray-lightest;
+    }
 }

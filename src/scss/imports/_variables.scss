@@ -4,6 +4,9 @@ $white: #fff;
 $black: #2a2a29;
 
 $gray: #999;
+$gray-light: mix($gray, $white, 40%);
+$gray-lighter: mix($gray, $white, 25%);
+$gray-lightest: mix($gray, $white, 10%);
 
 $grid-gutter: 16px;
 

@@ -66,12 +66,16 @@
                             <div class="mx-auto max-width-3" ng-controller="PlaylistController as playlist">
                                 <h2>Playlist</h2>
                                 <ol class="playlist left-align list-reset">
-                                    <li class="playlistTrack flex p1" ng-repeat="track in playlist.playlist.tracks">
+                                    <li class="playlistTrack flex py1 px2" ng-click="player.playByIndex($index)" ng-repeat="track in playlist.playlist.tracks">
                                         <div class="playlistTrack-number mr1" ng-bind="$index + 1"></div>
-                                        <div class="playlistTrack-title truncate flex-auto">
+                                        <div class="playlistTrack-title truncate">
                                             <span class="playlistTrack-username" ng-bind="track.user.username"></span>
                                             &ndash;
                                             <strong class="playlistTrack-trackname" ng-bind="track.title"></strong>
+                                        </div>
+                                        <div class="playlistTrack-indicator ml1">
+                                            <ng-include ng-show="track.id === playlist.playlist.currentTrackID && player.isPlaying" src=" 'img/controller-play.svg' "></ng-include>
+                                            <ng-include ng-show="track.id === playlist.playlist.currentTrackID && !player.isPlaying" src=" 'img/controller-pause.svg' "></ng-include>
                                         </div>
                                     </li>
                                 </ol>
@@ -85,6 +89,7 @@
             <footer class="footer center h6 mt3">
                 <div class="container">
                     Project for PV219 &ndash; Seminář webdesignu by Peter Solař
+                    <div><small>Entypo pictograms by Daniel Bruce — <a href="http://www.entypo.com/" target="_blank">www.entypo.com</a></small></div>
                 </div>
             </footer>
         </div>

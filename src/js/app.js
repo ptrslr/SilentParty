@@ -43,6 +43,7 @@ app.factory('playlist', function($rootScope) {
 
   playlist.updateCurrentTrack = function() {
     playlist.currentTrack = playlist.getCurrentTrack();
+    playlist.currentTrackID = playlist.currentTrack.id;
     playlist.currentTrackImage = playlist.currentTrack.artwork_url;
     playlist.currentTrackImageLarge = playlist.currentTrack.artwork_url.replace('large', 't500x500');
   };
@@ -100,17 +101,15 @@ app.controller('PlayerController', function(playlist, $scope) {
 
   self.playPause = function() {
     if (isPlaying) {
-      isPlaying = false;
       scPlayer.pause();
+      isPlaying = false;
       self.isPlaying = false;
     } else {
-      isPlaying = true;
       scPlayer.play( {playlistIndex: playlist.currentTrackIndex} );
       console.log(playlist.currentTrackIndex);
-      // console.log(scPlayer.playing);
+      isPlaying = true;
       self.isPlaying = true;
     }
-    // console.log(self.title);
 
   };
   self.previous = function() {
@@ -136,6 +135,14 @@ app.controller('PlayerController', function(playlist, $scope) {
     }
 
     console.log(playlist.currentTrackIndex);
+  };
+  self.playByIndex = function(index) {
+    playlist.currentTrackIndex = index;
+    isPlaying = false;
+    self.isPlaying = false;
+    self.playPause();
+    playlist.updateCurrentTrack();
+    // $scope.$apply();
   };
 });
 
