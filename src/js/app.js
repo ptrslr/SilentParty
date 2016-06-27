@@ -10,11 +10,9 @@ function createPlayer() {
   scPlayer = new SoundCloudAudio(CLIENT_ID);
 }
 
-createPlayer();
-
 var app = angular.module('silentParty', []);
 
-app.factory('playlist', function() {
+app.factory('playlist', function($rootScope) {
   var playlist = {};
   playlist.tracks = [];
   playlist.trackCount = 0;
@@ -31,10 +29,12 @@ app.factory('playlist', function() {
       playlist.trackCount = playlist.tracks.length;
       playlist.updateCurrentTrack();
 
+      $rootScope.$broadcast('showPlayer');
+
       // scPlayer.play();
       // isPlaying = true;
 
-      console.log(playlist.tracks);
+      // console.log(playlist.tracks);
 
       // once playlist is loaded it can be played
       // if (isPlaying) {
@@ -87,7 +87,7 @@ app.controller('MainController', function() {
   self.showPlayer = false;
 
 });
-app.controller('AudioSubmitController', function(playlist) {
+app.controller('AudioSubmitController', function(playlist, $rootScope) {
   var self = this;
   self.audioURL = "https://soundcloud.com/ptrslr/sets/chill";
 
@@ -97,15 +97,29 @@ app.controller('AudioSubmitController', function(playlist) {
     audioURL = self.audioURL;
     createPlayer();
     playlist.getPlaylist(audioURL);
+
+    // $rootScope.$broadcast('showPlayer');
   };
   self.keydown = function() {
 
   };
 });
 
-app.controller('PlayerController', function(playlist) {
+app.controller('PlayerController', function(playlist, $scope) {
   var self = this;
   self.playlist = playlist;
+  self.showPlayer = false;
+
+  $scope.$on('showPlayer', function(event) {
+    // console.log(self.playlist.tracks);
+    self.showPlayer = true;
+    self.playPause();
+    $scope.$digest(); // update view
+
+    // if (self.playlist.tracks.length !== 0) {
+    //   self.showPlayer = true;
+    // }
+  });
 
   self.playPause = function() {
     if (isPlaying) {

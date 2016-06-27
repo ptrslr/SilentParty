@@ -29,14 +29,14 @@
                         <h2>Submit a soundcloud URL</h2>
                         <div class="audioURL mx-auto w-sm-6" ng-controller="AudioSubmitController as audioSubmit">
                             <input id="audioURL-input" class="audioURL-input" ng-model="audioSubmit.audioURL" my-enter="audioSubmit.submit()" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="">
-                            <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit(); main.showPlayer = true;" type="button">submit</button>
+                            <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit()" type="button">submit</button>
                         </div>
                     </div>
                 </section>
                 <section class="center">
                     <div class="container">
                         <h2 class="hidden">Player</h2>
-                        <article id="player" class="player mx-auto" ng-controller="PlayerController as player" ng-show="main.showPlayer">
+                        <article id="player" class="player mx-auto" ng-controller="PlayerController as player" ng-show="player.showPlayer">
                             <h1 id="player-title" class="player-title" ng-bind="player.playlist.getCurrentTrack().title"></h1>
                             <img class="mb3" ng-src="{{ player.playlist.currentTrackImage }}" />
 
