@@ -30,22 +30,6 @@ app.factory('playlist', function($rootScope) {
       playlist.updateCurrentTrack();
 
       $rootScope.$broadcast('showPlayer');
-
-      // scPlayer.play();
-      // isPlaying = true;
-
-      // console.log(playlist.tracks);
-
-      // once playlist is loaded it can be played
-      // if (isPlaying) {
-      //   scPlayer.play();
-      // }
-
-      // for playlists it's possible to switch to another track in queue
-      // e.g. we do it here when playing track is finished
-      // scPlayer.on('ended', function () {
-      //   scPlayer.next();
-      // });
     });
   };
 
@@ -59,8 +43,8 @@ app.factory('playlist', function($rootScope) {
 
   playlist.updateCurrentTrack = function() {
     playlist.currentTrack = playlist.getCurrentTrack();
-    // playlist.currentTrackImage = playlist.currentTrack.artwork_url.replace('large', 't500x500');
     playlist.currentTrackImage = playlist.currentTrack.artwork_url;
+    playlist.currentTrackImageLarge = playlist.currentTrack.artwork_url.replace('large', 't500x500');
   };
 
 
@@ -82,9 +66,9 @@ app.directive('myEnter', function () {
     };
 });
 
-app.controller('MainController', function() {
+app.controller('MainController', function(playlist) {
   var self = this;
-  self.showPlayer = false;
+  self.playlist = playlist;
 
 });
 app.controller('AudioSubmitController', function(playlist, $rootScope) {
@@ -97,8 +81,6 @@ app.controller('AudioSubmitController', function(playlist, $rootScope) {
     audioURL = self.audioURL;
     createPlayer();
     playlist.getPlaylist(audioURL);
-
-    // $rootScope.$broadcast('showPlayer');
   };
   self.keydown = function() {
 
@@ -111,14 +93,9 @@ app.controller('PlayerController', function(playlist, $scope) {
   self.showPlayer = false;
 
   $scope.$on('showPlayer', function(event) {
-    // console.log(self.playlist.tracks);
     self.showPlayer = true;
     self.playPause();
-    $scope.$digest(); // update view
-
-    // if (self.playlist.tracks.length !== 0) {
-    //   self.showPlayer = true;
-    // }
+    $scope.$apply(); // update view
   });
 
   self.playPause = function() {
@@ -138,8 +115,6 @@ app.controller('PlayerController', function(playlist, $scope) {
   self.previous = function() {
     scPlayer.previous();
 
-    // playlist.nowPlaying = (playlist.nowPlaying - 1) % playlist.trackCount;
-
     if (playlist.nowPlaying > 0) {
       playlist.nowPlaying--;
       playlist.updateCurrentTrack();
@@ -147,7 +122,6 @@ app.controller('PlayerController', function(playlist, $scope) {
   };
   self.next = function() {
     scPlayer.next();
-    // playlist.nowPlaying = (playlist.nowPlaying + 1) % playlist.trackCount;
 
     if (playlist.nowPlaying < playlist.trackCount - 1) {
       playlist.nowPlaying++;

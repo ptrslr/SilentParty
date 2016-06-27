@@ -16,6 +16,7 @@
     </head>
     <body ng-controller="MainController as main">
         <div class="page">
+            <!-- <div class="page-background" style="background-image: url({{ main.playlist.currentTrackImageLarge }})"></div> -->
             <header class="header" role="banner">
                 <div class="container">
                     <h1 class="header-logo logo">
@@ -23,7 +24,7 @@
                     </h1>
                 </div>
             </header>
-            <main>
+            <main class="main">
                 <section class="center">
                     <div class="container">
                         <h2>Submit a soundcloud URL</h2>
@@ -36,7 +37,7 @@
                 <section class="center">
                     <div class="container">
                         <h2 class="hidden">Player</h2>
-                        <article id="player" class="player mx-auto" ng-controller="PlayerController as player" ng-show="player.showPlayer">
+                        <article id="player" class="player mx-auto ng-hide" ng-controller="PlayerController as player" ng-show="player.showPlayer">
                             <h1 id="player-title" class="player-title" ng-bind="player.playlist.getCurrentTrack().title"></h1>
                             <img class="mb3" ng-src="{{ player.playlist.currentTrackImage }}" />
 
@@ -56,6 +57,12 @@
                     </div>
                 </section>
             </main>
+
+            <footer class="footer center h6 mt3">
+                <div class="container">
+                    Project for PV219 &ndash; Seminář webdesignu by Peter Solař
+                </div>
+            </footer>
         </div>
 
         <!-- SCRIPTS -->
