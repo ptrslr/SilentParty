@@ -2,6 +2,7 @@ var gulp   = require('gulp')
     sass   = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     cssnano = require('gulp-cssnano'),
+    imagemin = require('gulp-imagemin'),
     rename = require('gulp-rename'),
     jshint = require('gulp-jshint'),
     browserSync = require('browser-sync');
@@ -29,6 +30,13 @@ gulp.task('sass', function() {
         .pipe(cssnano({autoprefixer: autoprefixerOptions}))
         .pipe(sourcemaps.write('./maps'))
         .pipe(gulp.dest('src/css'));
+});
+
+gulp.task('img', function() {
+    return gulp
+        .src('src/img/**/*')
+        .pipe(imagemin())
+        .pipe(gulp.dest('src/img'))
 });
 
 gulp.task('browser-sync', function() {

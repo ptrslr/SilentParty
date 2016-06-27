@@ -8,6 +8,10 @@ a,
 .link-default {
     color: inherit;
     text-decoration: underline;
+
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 .link-reset {

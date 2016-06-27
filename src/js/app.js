@@ -16,7 +16,7 @@ app.factory('playlist', function($rootScope) {
   var playlist = {};
   playlist.tracks = [];
   playlist.trackCount = 0;
-  playlist.nowPlaying = 0;
+  playlist.currentTrackIndex = 0;
 
   playlist.getPlaylist = function(audioURL) {
     scPlayer.resolve(audioURL, function (scPlaylist) {
@@ -38,7 +38,7 @@ app.factory('playlist', function($rootScope) {
   };
 
   playlist.getCurrentTrack = function() {
-    return playlist.tracks[playlist.nowPlaying];
+    return playlist.tracks[playlist.currentTrackIndex];
   };
 
   playlist.updateCurrentTrack = function() {
@@ -102,12 +102,13 @@ app.controller('PlayerController', function(playlist, $scope) {
     if (isPlaying) {
       isPlaying = false;
       scPlayer.pause();
-      self.playPauseLabel = "Play";
+      self.isPlaying = false;
     } else {
       isPlaying = true;
-      scPlayer.play();
+      scPlayer.play( {playlistIndex: playlist.currentTrackIndex} );
+      console.log(playlist.currentTrackIndex);
       // console.log(scPlayer.playing);
-      self.playPauseLabel = "Pause";
+      self.isPlaying = true;
     }
     // console.log(self.title);
 
@@ -115,18 +116,26 @@ app.controller('PlayerController', function(playlist, $scope) {
   self.previous = function() {
     scPlayer.previous();
 
-    if (playlist.nowPlaying > 0) {
-      playlist.nowPlaying--;
+    if (playlist.currentTrackIndex > 0) {
+      playlist.currentTrackIndex--;
       playlist.updateCurrentTrack();
+      self.isPlaying = true;
+      isPlaying = true;
     }
+
+    console.log(playlist.currentTrackIndex);
   };
   self.next = function() {
     scPlayer.next();
 
-    if (playlist.nowPlaying < playlist.trackCount - 1) {
-      playlist.nowPlaying++;
+    if (playlist.currentTrackIndex < playlist.trackCount - 1) {
+      playlist.currentTrackIndex++;
       playlist.updateCurrentTrack();
+      self.isPlaying = true;
+      isPlaying = true;
     }
+
+    console.log(playlist.currentTrackIndex);
   };
 });
 
