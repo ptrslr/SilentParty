@@ -25,64 +25,7 @@
                 </div>
             </header>
             <main id="app" class="main center">
-                <section class="center">
-                    <div class="container">
 
-                        <!-- <div id="audioURL" class="audioURL mx-auto w-sm-6" ng-controller="AudioSubmitController as audioSubmit">
-                            <input id="audioURL-input" class="audioURL-input" ng-model="audioSubmit.audioURL" my-enter="audioSubmit.submit()" type="text" placeholder="https://soundcloud.com/stamenofficial/stamen-chaos-original-mix" value="">
-                            <button id="audioURL-submit" class="audioURL-submit" ng-click="audioSubmit.submit()" type="button">submit</button>
-                        </div> -->
-                    </div>
-                </section>
-                <section class="center">
-                    <div class="container">
-                        <article id="player" class="player mx-auto ng-hide" ng-controller="PlayerController as player" ng-show="player.showPlayer">
-                            <h1 id="player-title" class="player-title">
-                                <small class="player-title-username h4 regular">
-                                    <a ng-href="{{ player.playlist.currentTrack.user.permalink_url }}" ng-bind="player.playlist.currentTrack.user.username" target="_blank"></a>
-                                </small>
-                                <div class="player-title-trackname truncate">
-                                    <a ng-href="{{ player.playlist.currentTrack.permalink_url }}" ng-bind="player.playlist.currentTrack.title" target="_blank"></a>
-                                </div>
-                            </h1>
-                            <a ng-href="{{ player.playlist.currentTrack.permalink_url }}" target="_blank">
-                                <img class="mb3" ng-src="{{ player.playlist.currentTrackImage }}" />
-                            </a>
-
-                            <div class="player-controls">
-                                <button id="player-previous" class="player-control player-control--previous" ng-click="player.previous()" ng-disabled="player.playlist.currentTrackIndex === 0" type="button">
-                                    <ng-include src=" 'img/controller-prev.svg' "></ng-includesrc=">
-                                </button>
-                                <!-- <button id="player-play" class="player-control player-control--play" ng-click="player.playPause()" ng-bind="player.playPauseLabel || 'Play'" type="button"> -->
-                                <button id="player-play" class="player-control player-control--play" ng-click="player.playPause()" type="button">
-                                    <ng-include ng-show="!player.isPlaying" src=" 'img/controller-play.svg' "></ng-include>
-                                    <ng-include ng-show="player.isPlaying" src=" 'img/controller-pause.svg' "></ng-include>
-                                </button>
-                                <button id="player-next" class="player-control player-control--next" ng-click="player.next()" ng-disabled="player.playlist.currentTrackIndex === player.playlist.trackCount - 1" type="button">
-                                    <ng-include src=" 'img/controller-next.svg' "></ng-includesrc=">
-                                </button>
-                            </div>
-                            <div class="mx-auto mt3 max-width-3" ng-controller="PlaylistController as playlist">
-                                <h2 class="hidden">Playlist</h2>
-                                <ol class="playlist left-align list-reset">
-                                    <li class="playlistTrack flex py1 px2" ng-click="player.playByIndex($index)" ng-repeat="track in playlist.playlist.tracks">
-                                        <div class="playlistTrack-number mr1" ng-bind="$index + 1"></div>
-                                        <div class="playlistTrack-title truncate">
-                                            <span class="playlistTrack-username" ng-bind="track.user.username"></span>
-                                            &ndash;
-                                            <strong class="playlistTrack-trackname" ng-bind="track.title"></strong>
-                                        </div>
-                                        <div class="playlistTrack-indicator ml1">
-                                            <ng-include ng-show="track.id === playlist.playlist.currentTrackID && player.isPlaying" src=" 'img/controller-play.svg' "></ng-include>
-                                            <ng-include ng-show="track.id === playlist.playlist.currentTrackID && !player.isPlaying" src=" 'img/controller-pause.svg' "></ng-include>
-                                        </div>
-                                    </li>
-                                </ol>
-                                <!-- <div ng-bind="playlist.playlist"></div> -->
-                            </div>
-                        </article>
-                    </div>
-                </section>
             </main>
 
             <footer class="footer center h6 mt3">
@@ -94,9 +37,9 @@
         </div>
 
         <!-- SCRIPTS -->
-        <script src="js/vendor/angular.min.js"></script>
+        <!-- <script src="js/vendor/angular.min.js"></script> -->
         <script src="https://connect.soundcloud.com/sdk/sdk-3.1.2.js"></script>
-        <script src="js/vendor/soundcloud-audio.min.js"></script>
+        <!-- <script src="js/vendor/soundcloud-audio.min.js"></script> -->
 
         <script src="js/bundle.js"></script>
     </body>
