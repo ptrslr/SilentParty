@@ -74,8 +74,8 @@
                                             <strong class="playlistTrack-trackname" ng-bind="track.title"></strong>
                                         </div>
                                         <div class="playlistTrack-indicator ml1">
-                                            <ng-include ng-show="track.id === playlist.playlist.currentTrackID && player.isPlaying" src=" 'img/controller-play.svg' "></ng-include>
-                                            <ng-include ng-show="track.id === playlist.playlist.currentTrackID && !player.isPlaying" src=" 'img/controller-pause.svg' "></ng-include>
+                                            <span ng-show="track.id === playlist.playlist.currentTrackID && player.isPlaying" ng-include=" 'img/controller-play.svg' "></span>
+                                            <span ng-show="track.id === playlist.playlist.currentTrackID && !player.isPlaying" ng-include=" 'img/controller-pause.svg' "></span>
                                         </div>
                                     </li>
                                 </ol>

@@ -8,7 +8,7 @@ var gulp   = require('gulp')
     browserSync = require('browser-sync');
 
 // define the default task and add the watch task to it
-gulp.task('default', ['sass']);
+gulp.task('default', ['watch']);
 
 
 /* node-sass, biatch! */
