@@ -5,10 +5,14 @@ var gulp   = require('gulp')
     imagemin = require('gulp-imagemin'),
     rename = require('gulp-rename'),
     jshint = require('gulp-jshint'),
+    // babel = require('gulp-babel'),
+    // concat = require('gulp-concat'),
+    webpack = require('webpack-stream'),
+    path = require('path'),
     browserSync = require('browser-sync');
 
 // define the default task and add the watch task to it
-gulp.task('default', ['sass']);
+gulp.task('default', ['watch']);
 
 
 /* node-sass, biatch! */
@@ -39,7 +43,49 @@ gulp.task('img', function() {
         .pipe(gulp.dest('src/img'))
 });
 
-gulp.task('browser-sync', function() {
+// gulp.task('js', function() {
+//     return gulp.src('src/**/*.js')
+//         .pipe(sourcemaps.init())
+//         .pipe(babel())
+//         .pipe(concat('all.js'))
+//         // .pipe(webpack())
+//         .pipe(sourcemaps.write('.'))
+//         .pipe(gulp.dest('dist'));
+// });
+
+var webpackConf = {
+    output: {
+        filename: 'bundle.js',
+        path: __dirname + '/dist'
+    },
+    module: {
+        loaders: [{
+            test: /\.jsx?$/,
+            include : path.resolve(__dirname, 'src/js'),
+            loader : 'babel-loader',
+            query: {
+                presets: ['es2015', 'react'],
+                plugins: ["transform-react-jsx"],
+            }
+        }]
+    }
+};
+gulp.task('webpack', function() {
+    return gulp.src('src/js/app.jsx')
+        .pipe(webpack(webpackConf).on('error', swallowError))
+        .pipe(gulp.dest('src/js'));
+});
+
+function swallowError (error) {
+
+  // If you want details of the error in the console
+  console.log(error.toString())
+
+  this.emit('end')
+}
+
+
+gulp.task('browser-sync', ['webpack', 'sass'], function() {
     browserSync({
         server: {
             baseDir: "src",
@@ -57,6 +103,6 @@ gulp.task('lint', function() {
 
 gulp.task('watch', ['browser-sync'], function(){
     gulp.watch(['src/scss/**/*.scss'], ['sass', browserSync.reload]);
-    gulp.watch(['src/js/**/*.js'], ['lint', browserSync.reload]);
+    gulp.watch(['src/js/**/*.jsx'], ['webpack', browserSync.reload]);
     gulp.watch(['src/**/*.php', 'src/**/*.html'], browserSync.reload);
 });

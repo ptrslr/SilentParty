@@ -43,6 +43,9 @@ input,
  * audioURL
  */
 .audioURL {
+
+}
+.audioURL-main {
     display: flex;
     margin: 0 auto 48px;
 }
@@ -91,20 +94,19 @@ input,
 
 .player-control {
     display: inline-block;
+    padding-top: 0;
+    padding-bottom: 0;
     margin-right: 4px;
     border-radius: 100%;
+    font-size: 2rem;
 
     &:hover,
     &:focus {
 
     }
 
-    .icon {
-        position: relative;
-        height: 2rem;
-    }
-    .icon-play {
-        left: .125em;
+    svg {
+        vertical-align: -5px;
     }
 }
 
@@ -130,6 +132,10 @@ input,
 .player-control--play {
     width: 86px;
     height: 86px;
+
+    svg {
+        margin-right: -5px;
+    }
 }
 
 /**
