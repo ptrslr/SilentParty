@@ -99,14 +99,18 @@ input,
     margin-right: 4px;
     border-radius: 100%;
     font-size: 2rem;
+    outline: none;
 
     &:hover,
     &:focus {
 
     }
 
-    svg {
+    .icon {
         vertical-align: -5px;
+    }
+    .icon-play {
+        margin-right: -5px;
     }
 }
 
@@ -132,10 +136,6 @@ input,
 .player-control--play {
     width: 86px;
     height: 86px;
-
-    svg {
-        margin-right: -5px;
-    }
 }
 
 /**
