@@ -219,6 +219,10 @@
 
 	        _this4.playPause = _this4.playPause.bind(_this4);
 	        _this4.playByTrackNo = _this4.playByTrackNo.bind(_this4);
+	        _this4.play = _this4.play.bind(_this4);
+	        _this4.pause = _this4.pause.bind(_this4);
+	        _this4.previous = _this4.previous.bind(_this4);
+	        _this4.next = _this4.next.bind(_this4);
 	        return _this4;
 	    }
 
@@ -339,6 +343,18 @@
 	            audio.pause();
 	        }
 	    }, {
+	        key: 'previous',
+	        value: function previous() {
+	            var currentTrackNo = this.state.currentTrackNo;
+	            this.playByTrackNo(currentTrackNo - 1 >= 0 ? currentTrackNo - 1 : 0);
+	        }
+	    }, {
+	        key: 'next',
+	        value: function next() {
+	            var currentTrackNo = this.state.currentTrackNo;
+	            this.playByTrackNo(currentTrackNo + 1 < this.state.tracks.length ? currentTrackNo + 1 : this.state.tracks.length - 1);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this5 = this;
@@ -381,7 +397,7 @@
 	                    { className: 'player-controls' },
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--previous', type: 'button', disabled: true },
+	                        { className: 'player-control player-control--previous', type: 'button', onClick: this.previous, disabled: this.state.currentTrackNo === 0 },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'previous', className: 'icon icon-prev' })
 	                    ),
 	                    _react2.default.createElement(
@@ -391,7 +407,7 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--next', type: 'button', disabled: true },
+	                        { className: 'player-control player-control--next', type: 'button', onClick: this.next, disabled: this.state.currentTrackNo === this.state.tracks.length - 1 },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'next', className: 'icon icon-next' })
 	                    )
 	                ),

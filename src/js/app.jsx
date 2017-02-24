@@ -97,6 +97,10 @@ class Player extends React.Component {
 
         this.playPause = this.playPause.bind(this);
         this.playByTrackNo = this.playByTrackNo.bind(this);
+        this.play = this.play.bind(this);
+        this.pause = this.pause.bind(this);
+        this.previous = this.previous.bind(this);
+        this.next = this.next.bind(this);
     }
     getStreamURL(track) {
         const result = track.stream_url + '?client_id=' + CLIENT_ID;
@@ -200,6 +204,14 @@ class Player extends React.Component {
     pause() {
         audio.pause();
     }
+    previous () {
+        let currentTrackNo = this.state.currentTrackNo;
+        this.playByTrackNo(currentTrackNo - 1 >= 0 ? currentTrackNo - 1 : 0)
+    }
+    next() {
+        let currentTrackNo = this.state.currentTrackNo;
+        this.playByTrackNo(currentTrackNo + 1 < this.state.tracks.length ? currentTrackNo + 1 : this.state.tracks.length - 1)
+    }
     render() {
         if (!this.state.isShown) {
             return null;
@@ -218,13 +230,13 @@ class Player extends React.Component {
                     <img className="mb3" src={this.state.img} />
                 </a>
                 <div className="player-controls">
-                    <button className="player-control player-control--previous" type="button" disabled>
+                    <button className="player-control player-control--previous" type="button" onClick={this.previous} disabled={this.state.currentTrackNo === 0}>
                         <Icon name="previous" className="icon icon-prev" />
                     </button>
                     <button className="player-control player-control--play"  type="button" onClick={this.playPause}>
                         {this.state.isPlaying ? <Icon name="pause" className="icon icon-pause" /> : <Icon name="play" className="icon icon-play" />}
                     </button>
-                    <button className="player-control player-control--next" type="button" disabled>
+                    <button className="player-control player-control--next" type="button" onClick={this.next} disabled={this.state.currentTrackNo === this.state.tracks.length - 1}>
                         <Icon name="next" className="icon icon-next" />
                     </button>
                 </div>
