@@ -79,7 +79,7 @@
 
 	// audioCtx = new AudioContext(),
 	audio = new Audio(),
-	    audioURL = 'https://soundcloud.com/orijanus/15oj';
+	    audioURL = 'https://soundcloud.com/roundmidnights/sets/kaytranada';
 	// isPlaying = false,
 	// scPlayer = new SoundCloudAudio(CLIENT_ID);
 
@@ -208,7 +208,7 @@
 	            isShown: true,
 	            isPlaying: false,
 	            currentTrackId: null,
-	            trackNo: 0,
+	            currentTrackNo: 0,
 	            audioData: {},
 	            username: '',
 	            title: '',
@@ -218,6 +218,7 @@
 	        };
 
 	        _this4.playPause = _this4.playPause.bind(_this4);
+	        _this4.playByTrackNo = _this4.playByTrackNo.bind(_this4);
 	        return _this4;
 	    }
 
@@ -254,7 +255,7 @@
 
 	                $this.setState({
 	                    isPlaying: false,
-	                    trackNo: 0,
+	                    currentTrackNo: 0,
 	                    currentTrackId: currentTrackId,
 	                    audioData: result,
 	                    username: username,
@@ -283,6 +284,30 @@
 	            });
 
 	            this.resolveAudio();
+	        }
+	    }, {
+	        key: 'playByTrackNo',
+	        value: function playByTrackNo(no) {
+	            if (no === this.state.currentTrackNo) {
+	                this.playPause();
+	            } else {
+	                var track = this.state.tracks[no];
+
+	                this.setState({
+	                    isPlaying: true,
+	                    currentTrackNo: no,
+	                    currentTrackId: track.id,
+	                    audioData: track,
+	                    username: track.user.username,
+	                    title: track.title,
+	                    img: track.artwork_url ? track.artwork_url : track.user.avatar_url,
+	                    streamURL: this.getStreamURL(track)
+	                }, function () {
+	                    audio.src = this.state.streamURL;
+	                    audio.play();
+	                    this.playlist.resolvePlaylist();
+	                });
+	            }
 	        }
 	    }, {
 	        key: 'playPause',
@@ -356,7 +381,7 @@
 	                    { className: 'player-controls' },
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--previous', type: 'button' },
+	                        { className: 'player-control player-control--previous', type: 'button', disabled: true },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'previous', className: 'icon icon-prev' })
 	                    ),
 	                    _react2.default.createElement(
@@ -366,11 +391,11 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--next', type: 'button' },
+	                        { className: 'player-control player-control--next', type: 'button', disabled: true },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'next', className: 'icon icon-next' })
 	                    )
 	                ),
-	                _react2.default.createElement(Playlist, { tracks: this.state.tracks, playerIsPlaying: this.state.isPlaying, onClick: this.playPause, currentTrackId: this.state.currentTrackId, ref: function ref(playlist) {
+	                _react2.default.createElement(Playlist, { tracks: this.state.tracks, playerIsPlaying: this.state.isPlaying, playPause: this.playPause, currentTrackId: this.state.currentTrackId, playByTrackNo: this.playByTrackNo, ref: function ref(playlist) {
 	                        _this5.playlist = playlist;
 	                    } })
 	            );
@@ -403,7 +428,7 @@
 	            var _this7 = this;
 
 	            var playlistItems = this.props.tracks.map(function (track) {
-	                return _react2.default.createElement(PlaylistTrack, { isActive: track.id === _this7.props.currentTrackId, playerIsPlaying: _this7.props.playerIsPlaying, key: track.id, track: track, trackNo: _this7.props.tracks.indexOf(track) });
+	                return _react2.default.createElement(PlaylistTrack, { isActive: track.id === _this7.props.currentTrackId, playerIsPlaying: _this7.props.playerIsPlaying, key: track.id, track: track, id: track.id, no: _this7.props.tracks.indexOf(track), onClick: _this7.handleClick });
 	            });
 	            // console.log(playlistItems);
 	            this.setState({
@@ -412,8 +437,9 @@
 	        }
 	    }, {
 	        key: 'handleClick',
-	        value: function handleClick() {
-	            this.props.onClick;
+	        value: function handleClick(no) {
+	            this.props.playByTrackNo(no);
+	            // console.log(this.props.currentTrackId, id);
 	        }
 	    }, {
 	        key: 'render',
@@ -444,19 +470,27 @@
 	    function PlaylistTrack(props) {
 	        _classCallCheck(this, PlaylistTrack);
 
-	        return _possibleConstructorReturn(this, (PlaylistTrack.__proto__ || Object.getPrototypeOf(PlaylistTrack)).call(this, props));
+	        var _this8 = _possibleConstructorReturn(this, (PlaylistTrack.__proto__ || Object.getPrototypeOf(PlaylistTrack)).call(this, props));
+
+	        _this8.handleClick = _this8.handleClick.bind(_this8);
+	        return _this8;
 	    }
 
 	    _createClass(PlaylistTrack, [{
+	        key: 'handleClick',
+	        value: function handleClick(e) {
+	            this.props.onClick(this.props.no);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'li',
-	                { className: "playlistTrack flex py1 px2 " + (this.props.isActive ? 'is-active' : '') },
+	                { className: "playlistTrack flex py1 px2 " + (this.props.isActive ? 'is-active' : ''), onClick: this.handleClick },
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'playlistTrack-number mr1' },
-	                    this.props.trackNo
+	                    this.props.no + 1
 	                ),
 	                _react2.default.createElement(
 	                    'div',

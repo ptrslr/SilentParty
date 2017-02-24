@@ -11,7 +11,7 @@ import SC from 'soundcloud';
 var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823',
     // audioCtx = new AudioContext(),
     audio = new Audio(),
-    audioURL = 'https://soundcloud.com/orijanus/15oj';
+    audioURL = 'https://soundcloud.com/roundmidnights/sets/kaytranada';
     // isPlaying = false,
     // scPlayer = new SoundCloudAudio(CLIENT_ID);
 
@@ -86,7 +86,7 @@ class Player extends React.Component {
             isShown: true,
             isPlaying: false,
             currentTrackId: null,
-            trackNo: 0,
+            currentTrackNo: 0,
             audioData: {},
             username: '',
             title: '',
@@ -96,6 +96,7 @@ class Player extends React.Component {
         };
 
         this.playPause = this.playPause.bind(this);
+        this.playByTrackNo = this.playByTrackNo.bind(this);
     }
     getStreamURL(track) {
         const result = track.stream_url + '?client_id=' + CLIENT_ID;
@@ -126,7 +127,7 @@ class Player extends React.Component {
 
             $this.setState({
                 isPlaying: false,
-                trackNo: 0,
+                currentTrackNo: 0,
                 currentTrackId: currentTrackId,
                 audioData: result,
                 username: username,
@@ -153,6 +154,28 @@ class Player extends React.Component {
         });
 
         this.resolveAudio();
+    }
+    playByTrackNo(no) {
+        if (no === this.state.currentTrackNo) {
+            this.playPause();
+        } else {
+            let track = this.state.tracks[no];
+
+            this.setState({
+                isPlaying: true,
+                currentTrackNo: no,
+                currentTrackId: track.id,
+                audioData: track,
+                username: track.user.username,
+                title: track.title,
+                img: track.artwork_url ? track.artwork_url : track.user.avatar_url,
+                streamURL: this.getStreamURL(track),
+            }, function() {
+                audio.src = this.state.streamURL;
+                audio.play();
+                this.playlist.resolvePlaylist();
+            })
+        }
     }
     playPause() {
         if (this.state.isPlaying) {
@@ -195,18 +218,18 @@ class Player extends React.Component {
                     <img className="mb3" src={this.state.img} />
                 </a>
                 <div className="player-controls">
-                    <button className="player-control player-control--previous" type="button">
+                    <button className="player-control player-control--previous" type="button" disabled>
                         <Icon name="previous" className="icon icon-prev" />
                     </button>
                     <button className="player-control player-control--play"  type="button" onClick={this.playPause}>
                         {this.state.isPlaying ? <Icon name="pause" className="icon icon-pause" /> : <Icon name="play" className="icon icon-play" />}
                     </button>
-                    <button className="player-control player-control--next" type="button">
+                    <button className="player-control player-control--next" type="button" disabled>
                         <Icon name="next" className="icon icon-next" />
                     </button>
                 </div>
 
-                <Playlist tracks={this.state.tracks} playerIsPlaying={this.state.isPlaying} onClick={this.playPause} currentTrackId={this.state.currentTrackId} ref={(playlist) => {this.playlist = playlist;}}/>
+                <Playlist tracks={this.state.tracks} playerIsPlaying={this.state.isPlaying} playPause={this.playPause} currentTrackId={this.state.currentTrackId} playByTrackNo={this.playByTrackNo} ref={(playlist) => {this.playlist = playlist;}}/>
             </article>
         );
     }
@@ -225,16 +248,16 @@ class Playlist extends React.Component {
 
     resolvePlaylist() {
         let playlistItems = this.props.tracks.map((track) =>
-            <PlaylistTrack isActive={track.id === this.props.currentTrackId} playerIsPlaying={this.props.playerIsPlaying} key={track.id} track={track} trackNo={this.props.tracks.indexOf(track)}/>);
+            <PlaylistTrack isActive={track.id === this.props.currentTrackId} playerIsPlaying={this.props.playerIsPlaying} key={track.id} track={track} id={track.id} no={this.props.tracks.indexOf(track)} onClick={this.handleClick}/>);
         // console.log(playlistItems);
         this.setState({
             playlistItems: playlistItems
         });
-
     }
 
-    handleClick() {
-        this.props.onClick;
+    handleClick(no) {
+        this.props.playByTrackNo(no);
+        // console.log(this.props.currentTrackId, id);
     }
 
     render() {
@@ -252,12 +275,18 @@ class Playlist extends React.Component {
 class PlaylistTrack extends React.Component {
     constructor(props) {
         super(props);
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(e) {
+        this.props.onClick(this.props.no);
     }
 
     render() {
         return (
-            <li className={"playlistTrack flex py1 px2 " + (this.props.isActive ? 'is-active' : '')}>
-                <div className="playlistTrack-number mr1">{this.props.trackNo}</div>
+            <li className={"playlistTrack flex py1 px2 " + (this.props.isActive ? 'is-active' : '')} onClick={this.handleClick}>
+                <div className="playlistTrack-number mr1">{this.props.no + 1}</div>
                 <div className="playlistTrack-title truncate">
                     <span className="playlistTrack-username">{this.props.track.user.username}</span>
                     &nbsp;&ndash;&nbsp;
