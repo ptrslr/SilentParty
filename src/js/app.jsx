@@ -29,7 +29,7 @@ class App extends React.Component {
         this.setState({
             audioURL: value
         }, function() {
-            this.player.updatePlayer();
+            this.player.resolveAudio();
         });
 
         // console.log(value);
@@ -83,48 +83,66 @@ class Player extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isPlaying: false,
             isShown: true,
+            isPlaying: false,
+            currentTrackId: null,
+            trackNo: 0,
             audioData: {},
             username: '',
             title: '',
             img: '',
-            streamURL: ''
+            streamURL: '',
+            tracks: []
         };
 
         this.playPause = this.playPause.bind(this);
     }
+    getStreamURL(track) {
+        const result = track.stream_url + '?client_id=' + CLIENT_ID;
+
+        return result;
+    }
     resolveAudio() {
         let $this = this;
         SC.resolve(this.props.audioURL).then(function(result) {
-            // console.log(result);
+            console.log(result);
 
             let audioData = result;
+            let kind = audioData.kind;
+            let tracks = [];
+
+            if (kind === "playlist") {
+                tracks = audioData.tracks;
+            } else {
+                tracks.push(audioData);
+            }
 
             let user = audioData.user;
             let username = user.username;
             let title = audioData.title;
             let img = audioData.artwork_url ? audioData.artwork_url : user.avatar_url;
-            let streamURL = audioData.stream_url + '?client_id=' + CLIENT_ID;
+            let currentTrackId = tracks[0].id;
+            let streamURL = $this.getStreamURL(tracks[0]);
 
             $this.setState({
                 isPlaying: false,
+                trackNo: 0,
+                currentTrackId: currentTrackId,
                 audioData: result,
                 username: username,
                 title: title,
                 img: img,
-                streamURL: streamURL
+                streamURL: streamURL,
+                tracks: tracks
             }, function() {
                 audio.src = $this.state.streamURL;
+                $this.playlist.resolvePlaylist();
             })
 
-            console.log($this.state);
+            // console.log($this.state);
         }, function(err) {
-            alert(err);
+            alert('Error resolving audio...perhaps bad url?' + err);
         });
-    }
-    updatePlayer() {
-        this.resolveAudio();
     }
     componentDidMount() {
         let audioData;
@@ -133,28 +151,8 @@ class Player extends React.Component {
         SC.initialize({
             client_id: CLIENT_ID
         });
-        SC.resolve(this.props.audioURL).then(function(result) {
-            console.log(result);
 
-            $this.setState({
-                audioData: result
-            });
-            $this.updatePlayer();
-
-            // const streamURL = result.stream_url + '?client_id=' + CLIENT_ID;
-            // const user = result.user;
-            // const username = user.username;
-
-            // audio.src = streamURL;
-        }, function(err) {
-            console.log(err);
-
-            // audioURL = 'test.mp3';
-            // audio.src = audioURL;
-        });
-
-
-
+        this.resolveAudio();
     }
     playPause() {
         if (this.state.isPlaying) {
@@ -208,36 +206,69 @@ class Player extends React.Component {
                     </button>
                 </div>
 
-                {/*<Playlist />*/}
+                <Playlist tracks={this.state.tracks} playerIsPlaying={this.state.isPlaying} onClick={this.playPause} currentTrackId={this.state.currentTrackId} ref={(playlist) => {this.playlist = playlist;}}/>
             </article>
         );
     }
 }
 
 class Playlist extends React.Component {
+    constructor(props) {
+        super(props);
+        // console.log(playlistItems);
+        this.state = {
+            playlistItems: this.props.tracks
+        }
 
-    play() {
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    resolvePlaylist() {
+        let playlistItems = this.props.tracks.map((track) =>
+            <PlaylistTrack isActive={track.id === this.props.currentTrackId} playerIsPlaying={this.props.playerIsPlaying} key={track.id} track={track} trackNo={this.props.tracks.indexOf(track)}/>);
+        // console.log(playlistItems);
+        this.setState({
+            playlistItems: playlistItems
+        });
 
     }
+
+    handleClick() {
+        this.props.onClick;
+    }
+
     render() {
         return (
             <div className="mx-auto mt3 max-width-3">
                 <h2 className="hidden">Playlist</h2>
                 <ol className="playlist left-align list-reset">
-                    <li className="playlistTrack flex py1 px2">
-                        <div className="playlistTrack-number mr1">1</div>
-                        <div className="playlistTrack-title truncate">
-                            <span className="playlistTrack-username">Username</span>
-                            &nbsp;&ndash;&nbsp;
-                            <strong className="playlistTrack-trackname">Trackname</strong>
-                        </div>
-                        <div className="playlistTrack-indicator ml1">
-                            <Icon name="play" />
-                        </div>
-                    </li>
+                    {this.state.playlistItems}
                 </ol>
             </div>
         );
+    }
+}
+
+class PlaylistTrack extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <li className={"playlistTrack flex py1 px2 " + (this.props.isActive ? 'is-active' : '')}>
+                <div className="playlistTrack-number mr1">{this.props.trackNo}</div>
+                <div className="playlistTrack-title truncate">
+                    <span className="playlistTrack-username">{this.props.track.user.username}</span>
+                    &nbsp;&ndash;&nbsp;
+                    <strong className="playlistTrack-trackname">{this.props.track.title}</strong>
+                </div>
+                <div className="playlistTrack-indicator ml1">
+                    <Icon name="play" className="icon icon-play"/>
+                    <Icon name="pause" className="icon icon-pause"/>
+                </div>
+            </li>
+        )
     }
 }
 

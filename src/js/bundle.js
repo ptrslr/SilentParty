@@ -106,7 +106,7 @@
 	            this.setState({
 	                audioURL: value
 	            }, function () {
-	                this.player.updatePlayer();
+	                this.player.resolveAudio();
 	            });
 
 	            // console.log(value);
@@ -205,13 +205,16 @@
 	        var _this4 = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
 
 	        _this4.state = {
-	            isPlaying: false,
 	            isShown: true,
+	            isPlaying: false,
+	            currentTrackId: null,
+	            trackNo: 0,
 	            audioData: {},
 	            username: '',
 	            title: '',
 	            img: '',
-	            streamURL: ''
+	            streamURL: '',
+	            tracks: []
 	        };
 
 	        _this4.playPause = _this4.playPause.bind(_this4);
@@ -219,40 +222,55 @@
 	    }
 
 	    _createClass(Player, [{
+	        key: 'getStreamURL',
+	        value: function getStreamURL(track) {
+	            var result = track.stream_url + '?client_id=' + CLIENT_ID;
+
+	            return result;
+	        }
+	    }, {
 	        key: 'resolveAudio',
 	        value: function resolveAudio() {
 	            var $this = this;
 	            _soundcloud2.default.resolve(this.props.audioURL).then(function (result) {
-	                // console.log(result);
+	                console.log(result);
 
 	                var audioData = result;
+	                var kind = audioData.kind;
+	                var tracks = [];
+
+	                if (kind === "playlist") {
+	                    tracks = audioData.tracks;
+	                } else {
+	                    tracks.push(audioData);
+	                }
 
 	                var user = audioData.user;
 	                var username = user.username;
 	                var title = audioData.title;
 	                var img = audioData.artwork_url ? audioData.artwork_url : user.avatar_url;
-	                var streamURL = audioData.stream_url + '?client_id=' + CLIENT_ID;
+	                var currentTrackId = tracks[0].id;
+	                var streamURL = $this.getStreamURL(tracks[0]);
 
 	                $this.setState({
 	                    isPlaying: false,
+	                    trackNo: 0,
+	                    currentTrackId: currentTrackId,
 	                    audioData: result,
 	                    username: username,
 	                    title: title,
 	                    img: img,
-	                    streamURL: streamURL
+	                    streamURL: streamURL,
+	                    tracks: tracks
 	                }, function () {
 	                    audio.src = $this.state.streamURL;
+	                    $this.playlist.resolvePlaylist();
 	                });
 
-	                console.log($this.state);
+	                // console.log($this.state);
 	            }, function (err) {
-	                alert(err);
+	                alert('Error resolving audio...perhaps bad url?' + err);
 	            });
-	        }
-	    }, {
-	        key: 'updatePlayer',
-	        value: function updatePlayer() {
-	            this.resolveAudio();
 	        }
 	    }, {
 	        key: 'componentDidMount',
@@ -263,25 +281,8 @@
 	            _soundcloud2.default.initialize({
 	                client_id: CLIENT_ID
 	            });
-	            _soundcloud2.default.resolve(this.props.audioURL).then(function (result) {
-	                console.log(result);
 
-	                $this.setState({
-	                    audioData: result
-	                });
-	                $this.updatePlayer();
-
-	                // const streamURL = result.stream_url + '?client_id=' + CLIENT_ID;
-	                // const user = result.user;
-	                // const username = user.username;
-
-	                // audio.src = streamURL;
-	            }, function (err) {
-	                console.log(err);
-
-	                // audioURL = 'test.mp3';
-	                // audio.src = audioURL;
-	            });
+	            this.resolveAudio();
 	        }
 	    }, {
 	        key: 'playPause',
@@ -315,6 +316,8 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this5 = this;
+
 	            if (!this.state.isShown) {
 	                return null;
 	            }
@@ -366,7 +369,10 @@
 	                        { className: 'player-control player-control--next', type: 'button' },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'next', className: 'icon icon-next' })
 	                    )
-	                )
+	                ),
+	                _react2.default.createElement(Playlist, { tracks: this.state.tracks, playerIsPlaying: this.state.isPlaying, onClick: this.playPause, currentTrackId: this.state.currentTrackId, ref: function ref(playlist) {
+	                        _this5.playlist = playlist;
+	                    } })
 	            );
 	        }
 	    }]);
@@ -377,15 +383,38 @@
 	var Playlist = function (_React$Component4) {
 	    _inherits(Playlist, _React$Component4);
 
-	    function Playlist() {
+	    function Playlist(props) {
 	        _classCallCheck(this, Playlist);
 
-	        return _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).apply(this, arguments));
+	        // console.log(playlistItems);
+	        var _this6 = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
+
+	        _this6.state = {
+	            playlistItems: _this6.props.tracks
+	        };
+
+	        _this6.handleClick = _this6.handleClick.bind(_this6);
+	        return _this6;
 	    }
 
 	    _createClass(Playlist, [{
-	        key: 'play',
-	        value: function play() {}
+	        key: 'resolvePlaylist',
+	        value: function resolvePlaylist() {
+	            var _this7 = this;
+
+	            var playlistItems = this.props.tracks.map(function (track) {
+	                return _react2.default.createElement(PlaylistTrack, { isActive: track.id === _this7.props.currentTrackId, playerIsPlaying: _this7.props.playerIsPlaying, key: track.id, track: track, trackNo: _this7.props.tracks.indexOf(track) });
+	            });
+	            // console.log(playlistItems);
+	            this.setState({
+	                playlistItems: playlistItems
+	            });
+	        }
+	    }, {
+	        key: 'handleClick',
+	        value: function handleClick() {
+	            this.props.onClick;
+	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -400,41 +429,61 @@
 	                _react2.default.createElement(
 	                    'ol',
 	                    { className: 'playlist left-align list-reset' },
-	                    _react2.default.createElement(
-	                        'li',
-	                        { className: 'playlistTrack flex py1 px2' },
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'playlistTrack-number mr1' },
-	                            '1'
-	                        ),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'playlistTrack-title truncate' },
-	                            _react2.default.createElement(
-	                                'span',
-	                                { className: 'playlistTrack-username' },
-	                                'Username'
-	                            ),
-	                            '\xA0\u2013\xA0',
-	                            _react2.default.createElement(
-	                                'strong',
-	                                { className: 'playlistTrack-trackname' },
-	                                'Trackname'
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'playlistTrack-indicator ml1' },
-	                            _react2.default.createElement(_reactGeomicons2.default, { name: 'play' })
-	                        )
-	                    )
+	                    this.state.playlistItems
 	                )
 	            );
 	        }
 	    }]);
 
 	    return Playlist;
+	}(_react2.default.Component);
+
+	var PlaylistTrack = function (_React$Component5) {
+	    _inherits(PlaylistTrack, _React$Component5);
+
+	    function PlaylistTrack(props) {
+	        _classCallCheck(this, PlaylistTrack);
+
+	        return _possibleConstructorReturn(this, (PlaylistTrack.__proto__ || Object.getPrototypeOf(PlaylistTrack)).call(this, props));
+	    }
+
+	    _createClass(PlaylistTrack, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'li',
+	                { className: "playlistTrack flex py1 px2 " + (this.props.isActive ? 'is-active' : '') },
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'playlistTrack-number mr1' },
+	                    this.props.trackNo
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'playlistTrack-title truncate' },
+	                    _react2.default.createElement(
+	                        'span',
+	                        { className: 'playlistTrack-username' },
+	                        this.props.track.user.username
+	                    ),
+	                    '\xA0\u2013\xA0',
+	                    _react2.default.createElement(
+	                        'strong',
+	                        { className: 'playlistTrack-trackname' },
+	                        this.props.track.title
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'playlistTrack-indicator ml1' },
+	                    _react2.default.createElement(_reactGeomicons2.default, { name: 'play', className: 'icon icon-play' }),
+	                    _react2.default.createElement(_reactGeomicons2.default, { name: 'pause', className: 'icon icon-pause' })
+	                )
+	            );
+	        }
+	    }]);
+
+	    return PlaylistTrack;
 	}(_react2.default.Component);
 
 	_reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('app'));
