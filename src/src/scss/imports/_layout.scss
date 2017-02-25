@@ -1,0 +1,63 @@
+//=============================================================================
+//  grid
+//=============================================================================
+
+.container {
+    max-width: $lg;
+    padding: 0px $grid-gutter;
+    margin: 0 auto;
+}
+
+.grid {
+    display: block;
+    margin: 0 -$grid-gutter;
+}
+
+.grid-cell {
+    display: block;
+    float: left;
+    padding: 0 $grid-gutter;
+}
+
+@for $i from 1 through 12 {
+    .w-#{$i} {
+        width: ($i / 12 * 100%);
+    }
+}
+
+@include media-min($lg) {
+    @for $i from 1 through 12 {
+        .w-lg-#{$i} {
+            width: ($i / 12 * 100%);
+        }
+    }
+}
+
+@include media-min($md) {
+    @for $i from 1 through 12 {
+        .w-md-#{$i} {
+            width: ($i / 12 * 100%);
+        }
+    }
+}
+
+@include media-min($sm) {
+    @for $i from 1 through 12 {
+        .w-sm-#{$i} {
+            width: ($i / 12 * 100%);
+        }
+    }
+}
+
+@include media-min($xs) {
+    @for $i from 1 through 12 {
+        .w-xs-#{$i} {
+            width: ($i / 12 * 100%);
+        }
+    }
+}
+
+.mx-auto {
+    margin-right: auto;
+    margin-left: auto;
+}
