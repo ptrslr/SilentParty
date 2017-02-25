@@ -15,6 +15,18 @@ var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823',
     // isPlaying = false,
     // scPlayer = new SoundCloudAudio(CLIENT_ID);
 
+/**
+ * @param  time in miliseconds
+ * @return time as string in format hh:mm
+ */
+function getTime(t) {
+    var seconds = Math.floor((t / 1000) % 60);
+    var minutes = Math.floor((t / 1000) / 60);
+
+    // slice so the seconds are always 2 digits
+    return minutes + ":" + ("0" + seconds).slice(-2);
+}
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -86,12 +98,13 @@ class Player extends React.Component {
             isPlaying: false,
             currentTrackId: null,
             currentTrackNo: 0,
+            currentTrackDuration: 0,
             audioData: {},
             username: '',
             title: '',
             img: '',
             streamURL: '',
-            tracks: []
+            tracks: [],
         };
 
         this.playPause = this.playPause.bind(this);
@@ -125,7 +138,7 @@ class Player extends React.Component {
             let username = user.username;
             let title = audioData.title;
 
-            let img = audioData.artwork_url ? audioData.artwork_url : user.avatar_url;
+            let img = tracks[0].artwork_url ? tracks[0].artwork_url : tracks[0].user.avatar_url;
             img = img.replace(/(.*)(-large)(\..*)/, '$1-t500x500$3');
             // console.log(img);
 
@@ -136,6 +149,7 @@ class Player extends React.Component {
                 isPlaying: false,
                 currentTrackNo: 0,
                 currentTrackId: currentTrackId,
+                currentTrackDuration: tracks[0].duration,
                 audioData: result,
                 username: username,
                 title: title,
@@ -143,7 +157,8 @@ class Player extends React.Component {
                 streamURL: streamURL,
                 tracks: tracks
             }, function() {
-                audio.src = $this.state.streamURL;
+                audio.src = streamURL;
+                $this.playPause();
                 $this.playlist.resolvePlaylist();
             })
 
@@ -184,6 +199,7 @@ class Player extends React.Component {
                 isPlaying: true,
                 currentTrackNo: no,
                 currentTrackId: track.id,
+                currentTrackDuration: track.duration,
                 audioData: track,
                 username: track.user.username,
                 title: track.title,
@@ -233,14 +249,15 @@ class Player extends React.Component {
         }
         return (
             <article className="player mx-auto">
-                <h1 className="player-title">
-                    <small className="player-title-username h4 regular">
+                <h1 className="playerTitle">
+                    <small className="playerTile-username h4 regular">
                         <a href="#" target="_blank">{this.state.username}</a>
                     </small>
-                    <div className="player-title-trackname truncate">
+                    <div className="playerTitle-trackname truncate">
                         <a href="#" target="_blank">{this.state.title}</a>
                     </div>
                 </h1>
+                <div className="playerTime">{getTime(this.state.currentTrackDuration)}</div>
                 {/* <a href="#" target="_blank">
                     <img className="mb3" src={this.state.img} />
                 </a> */}
@@ -320,10 +337,11 @@ class PlaylistTrack extends React.Component {
                     &nbsp;&ndash;&nbsp;
                     <strong className="playlistTrack-trackname">{this.props.track.title}</strong>
                 </div>
-                <div className="playlistTrack-indicator ml1">
+                <div className="playlistTrack-indicator ml1 mr1">
                     <Icon name="play" className="icon icon-play"/>
                     <Icon name="pause" className="icon icon-pause"/>
                 </div>
+                <div className="playlistTrack-duration ml-auto">{getTime(this.props.track.duration)}</div>
             </li>
         )
     }

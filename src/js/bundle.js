@@ -83,6 +83,18 @@
 	// isPlaying = false,
 	// scPlayer = new SoundCloudAudio(CLIENT_ID);
 
+	/**
+	 * @param  time in miliseconds
+	 * @return time as string in format hh:mm
+	 */
+	function getTime(t) {
+	    var seconds = Math.floor(t / 1000 % 60);
+	    var minutes = Math.floor(t / 1000 / 60);
+
+	    // slice so the seconds are always 2 digits
+	    return minutes + ":" + ("0" + seconds).slice(-2);
+	}
+
 	var App = function (_React$Component) {
 	    _inherits(App, _React$Component);
 
@@ -208,6 +220,7 @@
 	            isPlaying: false,
 	            currentTrackId: null,
 	            currentTrackNo: 0,
+	            currentTrackDuration: 0,
 	            audioData: {},
 	            username: '',
 	            title: '',
@@ -253,7 +266,7 @@
 	                var username = user.username;
 	                var title = audioData.title;
 
-	                var img = audioData.artwork_url ? audioData.artwork_url : user.avatar_url;
+	                var img = tracks[0].artwork_url ? tracks[0].artwork_url : tracks[0].user.avatar_url;
 	                img = img.replace(/(.*)(-large)(\..*)/, '$1-t500x500$3');
 	                // console.log(img);
 
@@ -264,6 +277,7 @@
 	                    isPlaying: false,
 	                    currentTrackNo: 0,
 	                    currentTrackId: currentTrackId,
+	                    currentTrackDuration: tracks[0].duration,
 	                    audioData: result,
 	                    username: username,
 	                    title: title,
@@ -271,7 +285,8 @@
 	                    streamURL: streamURL,
 	                    tracks: tracks
 	                }, function () {
-	                    audio.src = $this.state.streamURL;
+	                    audio.src = streamURL;
+	                    $this.playPause();
 	                    $this.playlist.resolvePlaylist();
 	                });
 
@@ -316,6 +331,7 @@
 	                    isPlaying: true,
 	                    currentTrackNo: no,
 	                    currentTrackId: track.id,
+	                    currentTrackDuration: track.duration,
 	                    audioData: track,
 	                    username: track.user.username,
 	                    title: track.title,
@@ -382,10 +398,10 @@
 	                { className: 'player mx-auto' },
 	                _react2.default.createElement(
 	                    'h1',
-	                    { className: 'player-title' },
+	                    { className: 'playerTitle' },
 	                    _react2.default.createElement(
 	                        'small',
-	                        { className: 'player-title-username h4 regular' },
+	                        { className: 'playerTile-username h4 regular' },
 	                        _react2.default.createElement(
 	                            'a',
 	                            { href: '#', target: '_blank' },
@@ -394,13 +410,18 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
-	                        { className: 'player-title-trackname truncate' },
+	                        { className: 'playerTitle-trackname truncate' },
 	                        _react2.default.createElement(
 	                            'a',
 	                            { href: '#', target: '_blank' },
 	                            this.state.title
 	                        )
 	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'playerTime' },
+	                    getTime(this.state.currentTrackDuration)
 	                ),
 	                _react2.default.createElement(
 	                    'div',
@@ -536,9 +557,14 @@
 	                ),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'playlistTrack-indicator ml1' },
+	                    { className: 'playlistTrack-indicator ml1 mr1' },
 	                    _react2.default.createElement(_reactGeomicons2.default, { name: 'play', className: 'icon icon-play' }),
 	                    _react2.default.createElement(_reactGeomicons2.default, { name: 'pause', className: 'icon icon-pause' })
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'playlistTrack-duration ml-auto' },
+	                    getTime(this.props.track.duration)
 	                )
 	            );
 	        }
