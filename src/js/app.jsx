@@ -27,6 +27,7 @@ function getTime(t) {
     return minutes + ":" + ("0" + seconds).slice(-2);
 }
 
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -99,6 +100,7 @@ class Player extends React.Component {
             currentTrackId: null,
             currentTrackNo: 0,
             currentTrackDuration: 0,
+            currentTrackTime: 0,
             audioData: {},
             username: '',
             title: '',
@@ -113,7 +115,30 @@ class Player extends React.Component {
         this.pause = this.pause.bind(this);
         this.previous = this.previous.bind(this);
         this.next = this.next.bind(this);
+
+        this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+        this.handleTrackEnded = this.handleTrackEnded.bind(this);
     }
+    componentDidMount() {
+        let audioData;
+        let $this = this;
+
+        audio = new Audio();
+        audio.addEventListener('ended', this.handleTrackEnded);
+        // audio.addEventListener('timeupdate', this.handleTimeUpdate);
+
+        this.timerID = setInterval(() => this.handleTimeUpdate(), 1000);
+
+        SC.initialize({
+            client_id: CLIENT_ID
+        });
+
+        this.resolveAudio();
+    }
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
     getStreamURL(track) {
         const result = track.stream_url + '?client_id=' + CLIENT_ID;
 
@@ -167,27 +192,22 @@ class Player extends React.Component {
             alert('Error resolving audio...perhaps bad url?' + err);
         });
     }
-    componentDidMount() {
-        let audioData;
-        let $this = this;
 
-        audio = new Audio();
-        audio.addEventListener('ended', function() {
-            console.log('ended');
-            if ($this.state.currentTrackNo === $this.state.tracks.length - 1) {
-                $this.setState({
-                    isPlaying: false
-                })
-            } else {
-                $this.playByTrackNo($this.state.currentTrackNo + 1);
-            }
-        });
+    handleTrackEnded() {
+        // console.log('ended');
 
-        SC.initialize({
-            client_id: CLIENT_ID
-        });
-
-        this.resolveAudio();
+        if (this.state.currentTrackNo === this.state.tracks.length - 1) {
+            $this.setState({
+                isPlaying: false
+            })
+        } else {
+            this.playByTrackNo(this.state.currentTrackNo + 1);
+        }
+    }
+    handleTimeUpdate() {
+        this.setState({
+            currentTrackTime: audio.currentTime * 1000
+        })
     }
     playByTrackNo(no) {
         if (no === this.state.currentTrackNo) {
@@ -200,6 +220,7 @@ class Player extends React.Component {
                 currentTrackNo: no,
                 currentTrackId: track.id,
                 currentTrackDuration: track.duration,
+                currentTrackTime: 0,
                 audioData: track,
                 username: track.user.username,
                 title: track.title,
@@ -207,21 +228,21 @@ class Player extends React.Component {
                 streamURL: this.getStreamURL(track),
             }, function() {
                 audio.src = this.state.streamURL;
-                audio.play();
+                this.play();
                 this.playlist.resolvePlaylist();
             })
         }
     }
     playPause() {
         if (this.state.isPlaying) {
-            console.log('pause that shit');
+            // console.log('pause that shit');
 
             this.pause();
             this.setState({
                 isPlaying: false
             })
         } else {
-            console.log('pump up the jam');
+            // console.log('pump up the jam');
 
             this.play();
             this.setState({
@@ -233,6 +254,7 @@ class Player extends React.Component {
         audio.play();
     }
     pause() {
+        clearInterval()
         audio.pause();
     }
     previous () {
@@ -257,7 +279,7 @@ class Player extends React.Component {
                         <a href="#" target="_blank">{this.state.title}</a>
                     </div>
                 </h1>
-                <div className="playerTime">{getTime(this.state.currentTrackDuration)}</div>
+                <div className="playerTime">{getTime(this.state.currentTrackTime)} - {getTime(this.state.currentTrackDuration)}</div>
                 {/* <a href="#" target="_blank">
                     <img className="mb3" src={this.state.img} />
                 </a> */}

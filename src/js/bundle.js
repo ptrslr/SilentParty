@@ -221,6 +221,7 @@
 	            currentTrackId: null,
 	            currentTrackNo: 0,
 	            currentTrackDuration: 0,
+	            currentTrackTime: 0,
 	            audioData: {},
 	            username: '',
 	            title: '',
@@ -235,10 +236,40 @@
 	        _this4.pause = _this4.pause.bind(_this4);
 	        _this4.previous = _this4.previous.bind(_this4);
 	        _this4.next = _this4.next.bind(_this4);
+
+	        _this4.handleTimeUpdate = _this4.handleTimeUpdate.bind(_this4);
+	        _this4.handleTrackEnded = _this4.handleTrackEnded.bind(_this4);
 	        return _this4;
 	    }
 
 	    _createClass(Player, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this5 = this;
+
+	            var audioData = void 0;
+	            var $this = this;
+
+	            audio = new Audio();
+	            audio.addEventListener('ended', this.handleTrackEnded);
+	            // audio.addEventListener('timeupdate', this.handleTimeUpdate);
+
+	            this.timerID = setInterval(function () {
+	                return _this5.handleTimeUpdate();
+	            }, 1000);
+
+	            _soundcloud2.default.initialize({
+	                client_id: CLIENT_ID
+	            });
+
+	            this.resolveAudio();
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            clearInterval(this.timerID);
+	        }
+	    }, {
 	        key: 'getStreamURL',
 	        value: function getStreamURL(track) {
 	            var result = track.stream_url + '?client_id=' + CLIENT_ID;
@@ -296,28 +327,24 @@
 	            });
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            var audioData = void 0;
-	            var $this = this;
+	        key: 'handleTrackEnded',
+	        value: function handleTrackEnded() {
+	            // console.log('ended');
 
-	            audio = new Audio();
-	            audio.addEventListener('ended', function () {
-	                console.log('ended');
-	                if ($this.state.currentTrackNo === $this.state.tracks.length - 1) {
-	                    $this.setState({
-	                        isPlaying: false
-	                    });
-	                } else {
-	                    $this.playByTrackNo($this.state.currentTrackNo + 1);
-	                }
+	            if (this.state.currentTrackNo === this.state.tracks.length - 1) {
+	                $this.setState({
+	                    isPlaying: false
+	                });
+	            } else {
+	                this.playByTrackNo(this.state.currentTrackNo + 1);
+	            }
+	        }
+	    }, {
+	        key: 'handleTimeUpdate',
+	        value: function handleTimeUpdate() {
+	            this.setState({
+	                currentTrackTime: audio.currentTime * 1000
 	            });
-
-	            _soundcloud2.default.initialize({
-	                client_id: CLIENT_ID
-	            });
-
-	            this.resolveAudio();
 	        }
 	    }, {
 	        key: 'playByTrackNo',
@@ -332,6 +359,7 @@
 	                    currentTrackNo: no,
 	                    currentTrackId: track.id,
 	                    currentTrackDuration: track.duration,
+	                    currentTrackTime: 0,
 	                    audioData: track,
 	                    username: track.user.username,
 	                    title: track.title,
@@ -339,7 +367,7 @@
 	                    streamURL: this.getStreamURL(track)
 	                }, function () {
 	                    audio.src = this.state.streamURL;
-	                    audio.play();
+	                    this.play();
 	                    this.playlist.resolvePlaylist();
 	                });
 	            }
@@ -348,14 +376,14 @@
 	        key: 'playPause',
 	        value: function playPause() {
 	            if (this.state.isPlaying) {
-	                console.log('pause that shit');
+	                // console.log('pause that shit');
 
 	                this.pause();
 	                this.setState({
 	                    isPlaying: false
 	                });
 	            } else {
-	                console.log('pump up the jam');
+	                // console.log('pump up the jam');
 
 	                this.play();
 	                this.setState({
@@ -371,6 +399,7 @@
 	    }, {
 	        key: 'pause',
 	        value: function pause() {
+	            clearInterval();
 	            audio.pause();
 	        }
 	    }, {
@@ -388,7 +417,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this5 = this;
+	            var _this6 = this;
 
 	            if (!this.state.isShown) {
 	                return null;
@@ -421,6 +450,8 @@
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'playerTime' },
+	                    getTime(this.state.currentTrackTime),
+	                    ' - ',
 	                    getTime(this.state.currentTrackDuration)
 	                ),
 	                _react2.default.createElement(
@@ -444,7 +475,7 @@
 	                    )
 	                ),
 	                _react2.default.createElement(Playlist, { tracks: this.state.tracks, playerIsPlaying: this.state.isPlaying, playPause: this.playPause, currentTrackId: this.state.currentTrackId, playByTrackNo: this.playByTrackNo, ref: function ref(playlist) {
-	                        _this5.playlist = playlist;
+	                        _this6.playlist = playlist;
 	                    } })
 	            );
 	        }
@@ -460,23 +491,23 @@
 	        _classCallCheck(this, Playlist);
 
 	        // console.log(playlistItems);
-	        var _this6 = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
+	        var _this7 = _possibleConstructorReturn(this, (Playlist.__proto__ || Object.getPrototypeOf(Playlist)).call(this, props));
 
-	        _this6.state = {
-	            playlistItems: _this6.props.tracks
+	        _this7.state = {
+	            playlistItems: _this7.props.tracks
 	        };
 
-	        _this6.handleClick = _this6.handleClick.bind(_this6);
-	        return _this6;
+	        _this7.handleClick = _this7.handleClick.bind(_this7);
+	        return _this7;
 	    }
 
 	    _createClass(Playlist, [{
 	        key: 'resolvePlaylist',
 	        value: function resolvePlaylist() {
-	            var _this7 = this;
+	            var _this8 = this;
 
 	            var playlistItems = this.props.tracks.map(function (track) {
-	                return _react2.default.createElement(PlaylistTrack, { isActive: track.id === _this7.props.currentTrackId, playerIsPlaying: _this7.props.playerIsPlaying, key: track.id, track: track, id: track.id, no: _this7.props.tracks.indexOf(track), onClick: _this7.handleClick });
+	                return _react2.default.createElement(PlaylistTrack, { isActive: track.id === _this8.props.currentTrackId, playerIsPlaying: _this8.props.playerIsPlaying, key: track.id, track: track, id: track.id, no: _this8.props.tracks.indexOf(track), onClick: _this8.handleClick });
 	            });
 	            // console.log(playlistItems);
 	            this.setState({
@@ -518,10 +549,10 @@
 	    function PlaylistTrack(props) {
 	        _classCallCheck(this, PlaylistTrack);
 
-	        var _this8 = _possibleConstructorReturn(this, (PlaylistTrack.__proto__ || Object.getPrototypeOf(PlaylistTrack)).call(this, props));
+	        var _this9 = _possibleConstructorReturn(this, (PlaylistTrack.__proto__ || Object.getPrototypeOf(PlaylistTrack)).call(this, props));
 
-	        _this8.handleClick = _this8.handleClick.bind(_this8);
-	        return _this8;
+	        _this9.handleClick = _this9.handleClick.bind(_this9);
+	        return _this9;
 	    }
 
 	    _createClass(PlaylistTrack, [{
