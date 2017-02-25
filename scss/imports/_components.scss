@@ -43,6 +43,9 @@ input,
  * audioURL
  */
 .audioURL {
+
+}
+.audioURL-main {
     display: flex;
     margin: 0 auto 48px;
 }
@@ -91,8 +94,12 @@ input,
 
 .player-control {
     display: inline-block;
+    padding-top: 0;
+    padding-bottom: 0;
     margin-right: 4px;
     border-radius: 100%;
+    font-size: 2rem;
+    outline: none;
 
     &:hover,
     &:focus {
@@ -100,11 +107,10 @@ input,
     }
 
     .icon {
-        position: relative;
-        height: 2rem;
+        vertical-align: -5px;
     }
     .icon-play {
-        left: .125em;
+        margin-right: -5px;
     }
 }
 
@@ -142,4 +148,16 @@ input,
     &:hover {
         background: $gray-lightest;
     }
+}
+.playlistTrack.is-active {
+    background: $gray-lightest;
+}
+
+.playlistTrack-indicator {
+    .icon {
+        display: none;
+    }
+}
+.playlistTrack.is-active .playlistTrack-indicator .icon-play {
+    display: inline-block;
 }
