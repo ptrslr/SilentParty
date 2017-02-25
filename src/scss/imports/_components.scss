@@ -88,33 +88,66 @@ input,
     }
 }
 
-.player-controls {
+.playerControls {
+    position: relative;
+    z-index: 0;
+    width: 24rem;
+    height: 24rem;
     text-align: center;
+    background-color: $black;
+    overflow: hidden;
+    // box-shadow: 6 0 8px rgba(black, .5);
+}
+.playerControls-bg {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background-position: 50% 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    filter: blur(6px);
+    transform: scale(1.1);
+    transition: all 250ms;
+}
+.playerControls:hover .playerControls-bg {
+
 }
 
-.player-control {
+.playerControl {
     display: inline-block;
     padding-top: 0;
     padding-bottom: 0;
-    margin-right: 4px;
+    border: none;
     border-radius: 100%;
+
     font-size: 2rem;
     outline: none;
+
+    background: $white;
 
     &:hover,
     &:focus {
 
     }
 
+    &:not(:last-child) {
+        margin-right: .5rem;
+    }
+
     .icon {
-        vertical-align: -5px;
+        vertical-align: -0.15625em;
     }
     .icon-play {
-        margin-right: -5px;
+        margin-right: -0.15625em;
     }
 }
 
-.player-control[disabled] {
+.playerControl[disabled] {
     opacity: 0.2;
 
     &:hover {
@@ -123,19 +156,15 @@ input,
     }
 }
 
-.player-control:last-child {
-    margin-right: 0;
+.playerControl--next,
+.playerControl--previous {
+    width: 4rem;
+    height: 4rem;
 }
 
-.player-control--next,
-.player-control--previous {
-    width: 64px;
-    height: 64px;
-}
-
-.player-control--play {
-    width: 86px;
-    height: 86px;
+.playerControl--play {
+    width: 8rem;
+    height: 8rem;
 }
 
 /**

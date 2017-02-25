@@ -10,11 +10,10 @@ import SC from 'soundcloud';
 
 var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823',
     // audioCtx = new AudioContext(),
-    audio = new Audio(),
+    audio,
     audioURL = 'https://soundcloud.com/roundmidnights/sets/kaytranada';
     // isPlaying = false,
     // scPlayer = new SoundCloudAudio(CLIENT_ID);
-
 
 class App extends React.Component {
     constructor(props) {
@@ -125,7 +124,11 @@ class Player extends React.Component {
             let user = audioData.user;
             let username = user.username;
             let title = audioData.title;
+
             let img = audioData.artwork_url ? audioData.artwork_url : user.avatar_url;
+            img = img.replace(/(.*)(-large)(\..*)/, '$1-t500x500$3');
+            // console.log(img);
+
             let currentTrackId = tracks[0].id;
             let streamURL = $this.getStreamURL(tracks[0]);
 
@@ -152,6 +155,18 @@ class Player extends React.Component {
     componentDidMount() {
         let audioData;
         let $this = this;
+
+        audio = new Audio();
+        audio.addEventListener('ended', function() {
+            console.log('ended');
+            if ($this.state.currentTrackNo === $this.state.tracks.length - 1) {
+                $this.setState({
+                    isPlaying: false
+                })
+            } else {
+                $this.playByTrackNo($this.state.currentTrackNo + 1);
+            }
+        });
 
         SC.initialize({
             client_id: CLIENT_ID
@@ -226,17 +241,18 @@ class Player extends React.Component {
                         <a href="#" target="_blank">{this.state.title}</a>
                     </div>
                 </h1>
-                <a href="#" target="_blank">
+                {/* <a href="#" target="_blank">
                     <img className="mb3" src={this.state.img} />
-                </a>
-                <div className="player-controls">
-                    <button className="player-control player-control--previous" type="button" onClick={this.previous} disabled={this.state.currentTrackNo === 0}>
+                </a> */}
+                <div className="playerControls mx-auto flex items-center justify-center">
+                    <div className="playerControls-bg" style={{backgroundImage: 'url(' + this.state.img + ')'}}></div>
+                    <button className="playerControl playerControl--previous" type="button" onClick={this.previous} disabled={this.state.currentTrackNo === 0}>
                         <Icon name="previous" className="icon icon-prev" />
                     </button>
-                    <button className="player-control player-control--play"  type="button" onClick={this.playPause}>
+                    <button className="playerControl playerControl--play"  type="button" onClick={this.playPause}>
                         {this.state.isPlaying ? <Icon name="pause" className="icon icon-pause" /> : <Icon name="play" className="icon icon-play" />}
                     </button>
-                    <button className="player-control player-control--next" type="button" onClick={this.next} disabled={this.state.currentTrackNo === this.state.tracks.length - 1}>
+                    <button className="playerControl playerControl--next" type="button" onClick={this.next} disabled={this.state.currentTrackNo === this.state.tracks.length - 1}>
                         <Icon name="next" className="icon icon-next" />
                     </button>
                 </div>

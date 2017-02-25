@@ -78,11 +78,10 @@
 	var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823',
 
 	// audioCtx = new AudioContext(),
-	audio = new Audio(),
+	audio,
 	    audioURL = 'https://soundcloud.com/roundmidnights/sets/kaytranada';
 	// isPlaying = false,
 	// scPlayer = new SoundCloudAudio(CLIENT_ID);
-
 
 	var App = function (_React$Component) {
 	    _inherits(App, _React$Component);
@@ -253,7 +252,11 @@
 	                var user = audioData.user;
 	                var username = user.username;
 	                var title = audioData.title;
+
 	                var img = audioData.artwork_url ? audioData.artwork_url : user.avatar_url;
+	                img = img.replace(/(.*)(-large)(\..*)/, '$1-t500x500$3');
+	                // console.log(img);
+
 	                var currentTrackId = tracks[0].id;
 	                var streamURL = $this.getStreamURL(tracks[0]);
 
@@ -282,6 +285,18 @@
 	        value: function componentDidMount() {
 	            var audioData = void 0;
 	            var $this = this;
+
+	            audio = new Audio();
+	            audio.addEventListener('ended', function () {
+	                console.log('ended');
+	                if ($this.state.currentTrackNo === $this.state.tracks.length - 1) {
+	                    $this.setState({
+	                        isPlaying: false
+	                    });
+	                } else {
+	                    $this.playByTrackNo($this.state.currentTrackNo + 1);
+	                }
+	            });
 
 	            _soundcloud2.default.initialize({
 	                client_id: CLIENT_ID
@@ -388,26 +403,22 @@
 	                    )
 	                ),
 	                _react2.default.createElement(
-	                    'a',
-	                    { href: '#', target: '_blank' },
-	                    _react2.default.createElement('img', { className: 'mb3', src: this.state.img })
-	                ),
-	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'player-controls' },
+	                    { className: 'playerControls mx-auto flex items-center justify-center' },
+	                    _react2.default.createElement('div', { className: 'playerControls-bg', style: { backgroundImage: 'url(' + this.state.img + ')' } }),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--previous', type: 'button', onClick: this.previous, disabled: this.state.currentTrackNo === 0 },
+	                        { className: 'playerControl playerControl--previous', type: 'button', onClick: this.previous, disabled: this.state.currentTrackNo === 0 },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'previous', className: 'icon icon-prev' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--play', type: 'button', onClick: this.playPause },
+	                        { className: 'playerControl playerControl--play', type: 'button', onClick: this.playPause },
 	                        this.state.isPlaying ? _react2.default.createElement(_reactGeomicons2.default, { name: 'pause', className: 'icon icon-pause' }) : _react2.default.createElement(_reactGeomicons2.default, { name: 'play', className: 'icon icon-play' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'button',
-	                        { className: 'player-control player-control--next', type: 'button', onClick: this.next, disabled: this.state.currentTrackNo === this.state.tracks.length - 1 },
+	                        { className: 'playerControl playerControl--next', type: 'button', onClick: this.next, disabled: this.state.currentTrackNo === this.state.tracks.length - 1 },
 	                        _react2.default.createElement(_reactGeomicons2.default, { name: 'next', className: 'icon icon-next' })
 	                    )
 	                ),
