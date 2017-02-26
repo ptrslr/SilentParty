@@ -7,9 +7,11 @@ var gulp   = require('gulp')
     jshint = require('gulp-jshint'),
     // babel = require('gulp-babel'),
     // concat = require('gulp-concat'),
-    webpack = require('webpack-stream'),
+    webpackStream = require('webpack-stream'),
     path = require('path'),
     browserSync = require('browser-sync');
+
+var webpack = require('webpack');
 
 // define the default task and add the watch task to it
 gulp.task('default', ['watch']);
@@ -44,8 +46,12 @@ gulp.task('img', function() {
 });
 
 var webpackConf = {
+    entry: {
+        main: './src/js/app.jsx',
+        // vendor: ['react', 'react-dom', 'react-geomicons']
+    },
     output: {
-        filename: 'bundle.js',
+        filename: '[name].js',
         path: __dirname + '/dist'
     },
     module: {
@@ -58,11 +64,11 @@ var webpackConf = {
                 plugins: ["transform-react-jsx"],
             }
         }]
-    }
+    },
 };
 gulp.task('webpack', function() {
     return gulp.src('src/js/app.jsx')
-        .pipe(webpack(webpackConf).on('error', swallowError))
+        .pipe(webpackStream(webpackConf).on('error', swallowError))
         .pipe(gulp.dest('src/js'));
 });
 

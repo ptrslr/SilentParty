@@ -91,31 +91,30 @@ input,
 .playerControls {
     position: relative;
     z-index: 0;
-    width: 24rem;
-    height: 24rem;
+    max-width: 24rem;
     text-align: center;
     background-color: $black;
     overflow: hidden;
-    // box-shadow: 6 0 8px rgba(black, .5);
+    // box-shadow: 0 2px 16px rgba(black, .5);
 }
 .playerControls-bg {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    width: 100%;
+    padding-bottom: 100%;
 
     background-position: 50% 50%;
     background-size: cover;
     background-repeat: no-repeat;
 
-    filter: blur(6px);
-    transform: scale(1.1);
+    filter: blur(2px);
+    transform: scale(1.05);
     transition: all 250ms;
 }
-.playerControls:hover .playerControls-bg {
-
+.playerControls-main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 
 .playerControl {
