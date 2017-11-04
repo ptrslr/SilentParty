@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Icon from 'react-geomicons';
 
 export default class AudioURL extends React.Component {
     constructor(props) {
@@ -27,8 +25,8 @@ export default class AudioURL extends React.Component {
     render() {
         return (
             <div className="audioURL">
-                <h2 className="audioURL-title">Submit a <a href="https://soundcloud.com" target="_blank">soundcloud</a> URL</h2>
-                <form className="audioURL-main mx-auto w-sm-6" onSubmit={this.handleSubmit} >
+                <h2 className="audioURL-title tc">Submit a <a href="https://soundcloud.com" target="_blank">soundcloud</a> URL</h2>
+                <form className="audioURL-main center w-50-ns" onSubmit={this.handleSubmit} >
                     <input id="audioURL-input" className="audioURL-input" type="text" placeholder={this.state.value} value={this.state.value} onChange={this.handleChange} />
                     <button id="audioURL-submit" className="audioURL-submit" type="submit">submit</button>
                 </form>

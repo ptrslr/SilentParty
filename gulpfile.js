@@ -47,7 +47,7 @@ gulp.task('img', function() {
 
 var webpackConf = {
     entry: {
-        main: './src/js/app.jsx',
+        main: './src/js/App.js',
         // vendor: ['react', 'react-dom', 'react-geomicons']
     },
     output: {

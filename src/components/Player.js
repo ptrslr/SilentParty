@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Icon from 'react-geomicons';
-import Playlist from './Playlist.jsx';
+import SC from 'soundcloud';
+import Playlist from './Playlist.js';
+import Icon from './Icon';
 
 var CLIENT_ID = 'bc2740865fc8d120b6df98beae813823';
 var audio;
@@ -70,7 +71,8 @@ export default class Player extends React.Component {
         const result = track.stream_url + '?client_id=' + CLIENT_ID;
 
         return result;
-    }
+	}
+
     resolveAudio() {
         let $this = this;
         SC.resolve(this.props.audioURL).then(function(result) {
@@ -121,10 +123,11 @@ export default class Player extends React.Component {
     }
 
     handleTrackEnded() {
-        // console.log('ended');
+		// console.log('ended');
+
 
         if (this.state.currentTrackNo === this.state.tracks.length - 1) {
-            $this.setState({
+            this.setState({
                 isPlaying: false
             })
         } else {
@@ -200,9 +203,9 @@ export default class Player extends React.Component {
             return null;
         }
         return (
-            <article className="player mx-auto">
-                <h1 className="playerTitle">
-                    <small className="playerTile-username h4 regular">
+            <article className="player mx-auto tc">
+                <h1 className="playerTitle mw6 center">
+                    <small className="playerTile-username f6 b ttu tracked silver">
                         <a href="#" target="_blank">{this.state.username}</a>
                     </small>
                     <div className="playerTitle-trackname truncate">
@@ -214,17 +217,20 @@ export default class Player extends React.Component {
                     <img className="mb3" src={this.state.img} />
                 </a> */}
                 <div>
-                    <div className="playerControls mx-auto">
+                    <div className="playerControls center ">
                         <div className="playerControls-bg" style={{backgroundImage: 'url(' + this.state.img + ')'}}></div>
                         <div className="playerControls-main flex items-center justify-center">
                             <button className="playerControl playerControl--previous" type="button" onClick={this.previous} disabled={this.state.currentTrackNo === 0}>
-                                <Icon name="previous" className="icon icon-prev" />
+                              <Icon name="previous" />
                             </button>
                             <button className="playerControl playerControl--play"  type="button" onClick={this.playPause}>
-                                {this.state.isPlaying ? <Icon name="pause" className="icon icon-pause" /> : <Icon name="play" className="icon icon-play" />}
+                                {this.state.isPlaying
+                                  ? <Icon name="pause" />
+                                  : <Icon name="play" />
+                                }
                             </button>
                             <button className="playerControl playerControl--next" type="button" onClick={this.next} disabled={this.state.currentTrackNo === this.state.tracks.length - 1}>
-                                <Icon name="next" className="icon icon-next" />
+                                <Icon name="next" />
                             </button>
                         </div>
                     </div>

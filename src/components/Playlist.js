@@ -1,7 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Icon from 'react-geomicons';
-import PlaylistTrack from './PlaylistTrack.jsx';
+import PlaylistTrack from './PlaylistTrack.js';
 
 export default class Playlist extends React.Component {
     constructor(props) {
@@ -30,9 +28,9 @@ export default class Playlist extends React.Component {
 
     render() {
         return (
-            <div className="mx-auto mt3 max-width-3">
+            <div className="center mt3 mw6">
                 <h2 className="hidden">Playlist</h2>
-                <ol className="playlist left-align list-reset">
+                <ol className="playlist pa0 ma0">
                     {this.state.playlistItems}
                 </ol>
             </div>

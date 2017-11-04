@@ -169,6 +169,11 @@ input,
 /**
  * Playlist
  */
+
+.playlist {
+    max-height: 324px;
+    overflow-y: auto;
+}
 .playlistTrack {
     cursor: pointer;
     // background: $gray-lighter;
@@ -179,13 +184,4 @@ input,
 }
 .playlistTrack.is-active {
     background: $gray-lightest;
-}
-
-.playlistTrack-indicator {
-    .icon {
-        display: none;
-    }
-}
-.playlistTrack.is-active .playlistTrack-indicator .icon-play {
-    display: inline-block;
 }
