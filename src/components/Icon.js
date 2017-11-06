@@ -1,24 +1,25 @@
 import React from 'react';
 import { MdPlayArrow, MdPause, MdSkipPrevious, MdSkipNext } from 'react-icons/lib/md';
 
-const Icon = (props) => {
+const Icon = ({ name, className = "" }) => {
+  let cls = `${className} icon`;
   const resolve = (name) => {
-    switch (props.name) {
+    switch (name) {
       case 'play':
-        return <MdPlayArrow />
+        return <MdPlayArrow className={cls} />
       case 'pause':
-        return <MdPause />
+        return <MdPause className={cls} />
       case 'previous':
-        return <MdSkipPrevious />
+        return <MdSkipPrevious className={cls} />
       case 'next' :
-        return <MdSkipNext />
+        return <MdSkipNext className={cls} />
       default:
         return null;
     }
   }
 
   return (
-    resolve(props.name)
+    resolve(name)
   )
 }
 

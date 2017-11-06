@@ -1,35 +1,26 @@
 import React, { Component } from 'react';
 import { Switch, withRouter, Route } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { connect } from 'react-redux';
+
+import { init } from './utils/api'; 
 
 import Header from './components/Header';
 import Footer from './components/Footer';
 
 import AudioURL from './components/AudioURL';
-import Player from './components/Player';
+import PlayerContainer from './containers/PlayerContainer';
+import Audio from "./components/Audio";
 
 const audioURL = 'https://soundcloud.com/yoonj0819/sets/thug';
 
 class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = ({
-      audioURL: audioURL,
-      audioURLShown: true,
-      playerShown: false,
-		});
-
-		this.updateAudioURL = this.updateAudioURL.bind(this);
-	}
-	updateAudioURL(value) {
-		this.setState({
-      audioURL: value,
-      audioURLShown: false,
-      playerShown: true
-		// }, function() {
-		// 	this.player.resolveAudio();
-		});
-	}
+  }
+  componentDidMount() {
+    init();
+  }
   render() {
     return (
       <TransitionGroup className="app">
@@ -40,16 +31,11 @@ class App extends Component {
 				}} classNames="RouteTransition">
           
 					<div className="main">
-
-            { this.state.audioURLShown && <AudioURL
-              value={this.state.audioURL}
+            <AudioURL
+              value={audioURL}
               onSubmit={this.updateAudioURL}
-            /> }
-            { this.state.playerShown && <Player
-              audioURL={this.state.audioURL}
-              ref={(player) => { this.player = player; }}
-            /> }
-
+            />
+            <PlayerContainer />
 					</div>
 				</CSSTransition>
         <Footer />
@@ -58,4 +44,4 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+export default withRouter(connect()(App));

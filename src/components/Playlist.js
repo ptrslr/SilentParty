@@ -1,39 +1,34 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { playTrack } from '../actions';
 import PlaylistTrack from './PlaylistTrack.js';
 
-export default class Playlist extends React.Component {
-    constructor(props) {
-        super(props);
-        // console.log(playlistItems);
-        this.state = {
-            playlistItems: this.props.tracks
-        }
+let Playlist = ({ tracks, trackId, isPlaying, dispatch }) => {
+  const handleClick = (index) => {
+      dispatch(playTrack(index));
+      // console.log(this.props.currentTrackId, id);
+  }
 
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    resolvePlaylist() {
-        let playlistItems = this.props.tracks.map((track) =>
-            <PlaylistTrack isActive={track.id === this.props.currentTrackId} playerIsPlaying={this.props.playerIsPlaying} key={track.id} track={track} id={track.id} no={this.props.tracks.indexOf(track)} onClick={this.handleClick} getTime={this.props.getTime} />);
-        // console.log(playlistItems);
-        this.setState({
-            playlistItems: playlistItems
-        });
-    }
-
-    handleClick(no) {
-        this.props.playByTrackNo(no);
-        // console.log(this.props.currentTrackId, id);
-    }
-
-    render() {
-        return (
-            <div className="center mt3 mw6">
-                <h2 className="hidden">Playlist</h2>
-                <ol className="playlist pa0 ma0">
-                    {this.state.playlistItems}
-                </ol>
-            </div>
-        );
-    }
+  let playlistItems = tracks.map((track) => (
+    <PlaylistTrack 
+      key={track.id}
+      isActive={track.id === trackId} 
+      isPlaying={isPlaying} 
+      track={track} 
+      index={tracks.indexOf(track)} 
+      onClick={handleClick} 
+    />
+  ));
+  
+  return (
+    <div className="center mt3 mw6">
+      <h2 className="hidden">Playlist</h2>
+      <ol className="playlist pa0 ma0">
+          {playlistItems}
+      </ol>
+    </div>
+  );
 }
+
+Playlist = connect()(Playlist);
+export default Playlist;
